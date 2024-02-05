@@ -1,4 +1,5 @@
 const { request, response } = require('express');
+const now = new Date();
 
 const Pool = require('pg').Pool
 const pool = new Pool({
@@ -29,30 +30,36 @@ const get_users_info_by_name = (request, response) => {
   });
 };
 
-const post_user_info = (request, response) => {
-  const { name, weight, height, year } = request.body
+const post_user_info = (request, response, next) => {
+  const { name, height, weight, year, gender } = request.body;
+  const bmi = weight / (height / 100) ** 2; // 將身高從厘米轉換為米
+  const now = new Date(); // 獲取當前時間
 
-  pool.query('INSERT INTO user_info (name, weight,height ,year) VALUES ($1,$2,$3,$4) RETURNING *', [name, weight, height, year], (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(201).send(`User added with ID: ${results.rows[0].user_id}`)
-  })
-}
+  pool.query('INSERT INTO user_info (name, weight, height, year, gender, date,bmi) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+    [name, height, weight, year, gender, now, bmi], (error, results) => {
+      if (error) {
+        next(error); // 使用 next 將錯誤傳遞給錯誤處理中間件
+      } else {
+        response.status(201).send(`User added with ID: ${results.rows[0].user_id}`);
+      }
+    });
+};
 
-const update_user_info = (request, response) => {
+
+const update_user_info = (request, response, next) => {
   const name = request.params.name;
-  const { weight, height, year } = request.body;
-
-  pool.query('UPDATE user_info SET weight = $2, height = $3, year = $4 WHERE name = $1 RETURNING *', [name, weight, height, year], (error, results) => {
+  const { weight, height, year, gender } = request.body;
+  const bmi = weight / (height / 100) ** 2;
+  const now = new Date();
+  pool.query('UPDATE user_info SET weight = $2,gender=$6 ,height = $3, year = $4,bmi = $5 WHERE name = $1 RETURNING *', [name, weight, height, year, bmi, gender], (error, results) => {
     if (error) {
-      throw error;
+      next(error);
     }
     if (results.rows.length > 0) {
-      
+
       response.status(200).json(results.rows[0]);
     } else {
-      
+
       response.status(404).send(`User not found with name: ${name}`);
     }
   });
