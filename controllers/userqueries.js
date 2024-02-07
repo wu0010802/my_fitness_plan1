@@ -1,6 +1,4 @@
 const { request, response } = require('express');
-const now = new Date();
-
 const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'yilunwu',
@@ -32,19 +30,18 @@ const get_users_info_by_name = (request, response) => {
 
 const post_user_info = (request, response, next) => {
   const { name, height, weight, year, gender } = request.body;
-  const bmi = weight / (height / 100) ** 2; // 將身高從厘米轉換為米
-  const now = new Date(); // 獲取當前時間
+  const bmi = weight / (height / 100) ** 2;
+  const now = new Date();
 
   pool.query('INSERT INTO user_info (name, weight, height, year, gender, date,bmi) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
     [name, height, weight, year, gender, now, bmi], (error, results) => {
       if (error) {
-        next(error); // 使用 next 將錯誤傳遞給錯誤處理中間件
+        next(error);
       } else {
         response.status(201).send(`User added with ID: ${results.rows[0].user_id}`);
       }
     });
 };
-
 
 const update_user_info = (request, response, next) => {
   const name = request.params.name;
@@ -74,8 +71,6 @@ const deleteUser = (request, response) => {
     response.status(200).send(`User deleted with ID: ${name}`)
   })
 }
-
-
 
 module.exports = {
   post_user_info,
