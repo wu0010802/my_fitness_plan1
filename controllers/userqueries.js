@@ -30,11 +30,11 @@ const get_users_info_by_name = (request, response) => {
 
 const post_user_info = (request, response, next) => {
   const { name, height, weight, year, gender } = request.body;
-  const bmi = weight / (height / 100) ** 2;
+  // const bmi = weight / (height / 100) ** 2;
   const now = new Date();
 
-  pool.query('INSERT INTO user_info (name, weight, height, year, gender, date,bmi) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-    [name, height, weight, year, gender, now, bmi], (error, results) => {
+  pool.query('INSERT INTO user_info (name, weight, height, year, gender, date) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+    [name, height, weight, year, gender, now], (error, results) => {
       if (error) {
         next(error);
       } else {
@@ -46,9 +46,9 @@ const post_user_info = (request, response, next) => {
 const update_user_info = (request, response, next) => {
   const name = request.params.name;
   const { weight, height, year, gender } = request.body;
-  const bmi = weight / (height / 100) ** 2;
+  // const bmi = weight / (height / 100) ** 2;
   const now = new Date();
-  pool.query('UPDATE user_info SET weight = $2,gender=$6 ,height = $3, year = $4,bmi = $5 WHERE name = $1 RETURNING *', [name, weight, height, year, bmi, gender,], (error, results) => {
+  pool.query('UPDATE user_info SET weight = $2,gender=$5 ,height = $3, year = $4 WHERE name = $1 RETURNING *', [name, weight, height, year, gender], (error, results) => {
     if (error) {
       next(error);
     }

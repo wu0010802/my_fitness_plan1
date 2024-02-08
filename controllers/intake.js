@@ -10,9 +10,6 @@ const pool = new Pool({
     port: 5432,
 })
 
-
-
-
 // 加入食物至intakelogs(user_id,food_id,intake_date,amount)
 const post_intake = async (request, response, next) => {
     const {user_id,food_name,amount}= request.body;
@@ -38,6 +35,32 @@ const post_intake = async (request, response, next) => {
         next(error);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const daily_target_calculate = async(request,response,next) =>{
+
+// }
+
+
+
+
+
+
+
+
+
 
 
 module.exports ={
