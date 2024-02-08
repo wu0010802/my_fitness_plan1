@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const userdb = require('./controllers/userqueries');
 const fooddb = require('./controllers/foodqueries');
+const nutrition = require('./controllers/nutrition')
 const cors = require('cors');
 const port = 3000;
 
@@ -21,6 +22,7 @@ app.put('/users/:name', userdb.update_user_info);
 app.post('/users', userdb.post_user_info);
 app.delete('/users/:name', userdb.deleteUser);
 app.get('/food_info/:food', fooddb.get_food_info);
+app.post('/nutrition',nutrition.post_intake)
 
 
 app.use((err, req, res, next) => {
