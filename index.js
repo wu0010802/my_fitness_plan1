@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const db = require('./controllers/queries');
+const userdb = require('./controllers/userqueries');
+const fooddb = require('./controllers/foodqueries');
 const cors = require('cors');
 const port = 3000;
 
@@ -14,11 +15,13 @@ app.use(
 )
 
 
-app.get('/users', db.get_users_info);
-app.get('/users/:name', db.get_users_info_by_name);
-app.put('/users/:name', db.update_user_info);
-app.post('/users', db.post_user_info);
-app.delete('/users/:name',db.deleteUser);
+app.get('/users', userdb.get_users_info);
+app.get('/users/:name', userdb.get_users_info_by_name);
+app.put('/users/:name', userdb.update_user_info);
+app.post('/users', userdb.post_user_info);
+app.delete('/users/:name', userdb.deleteUser);
+app.get('/food_info/:food', fooddb.get_food_info);
+
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500);

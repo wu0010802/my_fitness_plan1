@@ -3,7 +3,7 @@ const Pool = require('pg').Pool
 const pool = new Pool({
   user: 'yilunwu',
   host: 'localhost',
-  database: 'user',
+  database: 'fitness',
   password: 'password',
   port: 5432,
 })
@@ -48,7 +48,7 @@ const update_user_info = (request, response, next) => {
   const { weight, height, year, gender } = request.body;
   const bmi = weight / (height / 100) ** 2;
   const now = new Date();
-  pool.query('UPDATE user_info SET weight = $2,gender=$6 ,height = $3, year = $4,bmi = $5 WHERE name = $1 RETURNING *', [name, weight, height, year, bmi, gender], (error, results) => {
+  pool.query('UPDATE user_info SET weight = $2,gender=$6 ,height = $3, year = $4,bmi = $5 WHERE name = $1 RETURNING *', [name, weight, height, year, bmi, gender,], (error, results) => {
     if (error) {
       next(error);
     }
