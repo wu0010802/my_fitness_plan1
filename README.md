@@ -5,6 +5,10 @@ gcloud init
 gcloud app deploy
 ```
 
+# GCP config
+
+* GCP project id: probable-bebop-413807
+
 ### API EndPoint
 * 測試：https://probable-bebop-413807.df.r.appspot.com
 
