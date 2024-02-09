@@ -25,7 +25,7 @@ app.post('/users', userdb.post_user_info);
 app.delete('/users/:name', userdb.deleteUser);
 app.get('/food_info/:food', fooddb.get_food_info);
 app.post('/intake',nutrition.post_intake);
-app.get('/intake',nutrition.get_daily_intake_nutrition);
+// app.get('/intake',nutrition.get_daily_intake_nutrition);
 app.get('/intake_list',nutrition.get_daily_intake_list);
 
 app.use((err, req, res, next) => {
