@@ -44,8 +44,17 @@ const post_intake = async (request, response, next) => {
 const get_daily_intake_list = async (request, response, next) => {
     try {
         const now = new Date();
-        const get_daily_intake_list_result = await pool.query('SELECT food_name,calories,fat,protein,carbohydrate,amount FROM food_info JOIN intake_logs ON food_info.food_id = intake_logs.food_id WHERE intake_date = $1',[now]);
-        response.status(200).send(get_daily_intake_list_result.rows);
+        const get_daily_intake_list_result = await pool.query('SELECT food_name,calories,fat,protein,carbohydrate,amount,intake_date FROM food_info JOIN intake_logs ON food_info.food_id = intake_logs.food_id WHERE intake_date = $1',[now]);
+
+        const convertedList = get_daily_intake_list_result.map(intake => ({
+            ...intake,
+            calories: (intake.calories * intake.amount / 100).toFixed(2),
+            fat: (intake.fat * intake.amount / 100).toFixed(2),
+            protein: (intake.protein * intake.amount / 100).toFixed(2),
+            carbohydrate: (intake.carbohydrate * intake.amount / 100).toFixed(2),
+        }));
+        response.status(200).send(convertedList.rows);
+
     } catch(error) {
         console.error(error);
         next(error);
