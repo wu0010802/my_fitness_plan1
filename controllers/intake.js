@@ -32,7 +32,7 @@ const post_intake = async (request, response, next) => {
 const get_daily_intake_nutrition = async (request, response, next) => {
     try {
         const now = new Date();
-        const get_daily_intake_nutrition_result =await pool.query('SELECT SUM(calories),SUM(protein),SUM(fat),SUM(carbohydrate),SUM(amount) FROM food_info JOIN intake_logs ON food_info.food_id = intake_logs.food_id WHERE intake_date = $1 GROUP BY intake_date;',[now]);
+        const get_daily_intake_nutrition_result =await pool.query('SELECT SUM(calories) AS total_calories, SUM(protein) AS total_protein, SUM(fat) AS total_fat, SUM(carbohydrate) AS total_carbohydrate FROM food_info JOIN intake_logs ON food_info.food_id = intake_logs.food_id WHERE intake_date = $1 GROUP BY intake_date';,[now]);
         response.status(200).send(get_daily_intake_nutrition_result.rows);
     } catch(error) {
         console.error(error);
