@@ -28,7 +28,7 @@ const post_intake = async (request, response, next) => {
         next(error);
     }
 }
-
+// 未完成
 const get_daily_intake_nutrition = async (request, response, next) => {
     try {
         const now = new Date();
@@ -41,17 +41,24 @@ const get_daily_intake_nutrition = async (request, response, next) => {
 }
 
 
-
-
-
-
+const get_daily_intake_list = async (request, response, next) => {
+    try {
+        const now = new Date();
+        const get_daily_intake_list_result = await pool.query('SELECT food_name,calories,fat,protein,carbohydrate,amount FROM food_info JOIN intake_logs ON food_info.food_id = intake_logs.food_id WHERE intake_date = $1',[now]);
+        response.status(200).send(get_daily_intake_list_result.rows);
+    } catch(error) {
+        console.error(error);
+        next(error);
+    }
+}
 
 
 
 
 module.exports = {
     get_daily_intake_nutrition,
-    post_intake
+    post_intake,
+    get_daily_intake_list
 }
 
 
