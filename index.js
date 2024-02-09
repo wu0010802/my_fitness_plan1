@@ -5,7 +5,7 @@ const userdb = require('./controllers/userqueries');
 const fooddb = require('./controllers/foodqueries');
 const nutrition = require('./controllers/intake')
 const cors = require('cors');
-const port = 3000;
+const port = 1000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -24,7 +24,6 @@ app.delete('/users/:name', userdb.deleteUser);
 app.get('/food_info/:food', fooddb.get_food_info);
 app.post('/intake',nutrition.post_intake)
 
-
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.send({
@@ -34,8 +33,6 @@ app.use((err, req, res, next) => {
     },
   });
 });
-
-
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)

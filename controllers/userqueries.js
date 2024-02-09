@@ -6,28 +6,25 @@ const pool = new Pool({
   database: 'fitness',
   password: 'password',
   port: 5432,
-})
+});
 
 class Nutrition {
   constructor(tdee) {
     this.tdee = tdee;
-
   }
-  target_protein (){
-    const protein = this.tdee * 0.275/4;
+  target_protein() {
+    const protein = this.tdee * 0.275 / 4;
     return Number(protein.toFixed(2));
   }
-  target_fat (){
-    const fat = this.tdee * 0.2/9;
+  target_fat() {
+    const fat = this.tdee * 0.2 / 9;
     return Number(fat.toFixed(2));
   }
-  target_carbohydrate (){
-    const target_carbohydrate = this.tdee * 0.525/4;
+  target_carbohydrate() {
+    const target_carbohydrate = this.tdee * 0.525 / 4;
     return Number(target_carbohydrate.toFixed(2));
   }
-
 }
-
 
 function BMR_calculate(gender, weight, height, age) {
   let bmr;
@@ -60,6 +57,7 @@ function bmi_calculate(weight, height) {
 
 
 const get_users_info = (request, response) => {
+
   pool.query('SELECT * FROM user_info ORDER BY user_id ASC', (error, results) => {
     if (error) {
       throw error
@@ -79,7 +77,6 @@ const get_users_info_by_name = (request, response) => {
   });
 };
 
-
 const post_user_info = (request, response, next) => {
   const { name, height, weight, age, gender, exercise_per_week } = request.body;
   const bmr = BMR_calculate(gender, weight, height, age);
@@ -92,7 +89,7 @@ const post_user_info = (request, response, next) => {
   const target_carbohydrate = nutrition.target_carbohydrate();
 
   pool.query('INSERT INTO user_info (name, weight, height, age, gender, date,bmi,tdee,protein,fat,carbohydrates) VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9,$10,$11) RETURNING *',
-    [name, height, weight, age, gender, now, bmi, tdee,target_protein,target_fat,target_carbohydrate], (error, results) => {
+    [name, height, weight, age, gender, now, bmi, tdee, target_protein, target_fat, target_carbohydrate], (error, results) => {
       if (error) {
         next(error);
       } else {
@@ -104,11 +101,9 @@ const post_user_info = (request, response, next) => {
 const update_user_info = (request, response, next) => {
   const name = request.params.name;
   const { weight, height, age, gender, exercise_per_week } = request.body;
-
   const bmr = BMR_calculate(gender, weight, height, age);
   const bmi = bmi_calculate(weight, height);
   const tdee = TDEE_calculate(exercise_per_week, bmr);
-
 
   pool.query('UPDATE user_info SET weight = $2,gender=$5 ,height = $3, age = $4,bmi =$6,tdee = $7 WHERE name = $1 RETURNING *', [name, weight, height, age, gender, bmi, tdee], (error, results) => {
     if (error) {
@@ -123,6 +118,7 @@ const update_user_info = (request, response, next) => {
     }
   });
 }
+
 const deleteUser = (request, response) => {
   const name = request.params.name;
 
