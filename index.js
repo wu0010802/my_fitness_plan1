@@ -5,7 +5,7 @@ const userdb = require('./controllers/userqueries');
 const fooddb = require('./controllers/foodqueries');
 const nutrition = require('./controllers/intake')
 const cors = require('cors');
-const port = 1000;
+const port = process.env.PORT || 3000
 
 app.use(cors());
 app.use(bodyParser.json());
