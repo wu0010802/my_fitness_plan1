@@ -6,11 +6,11 @@ const Pool = require('pg').Pool
 
 const pool = new Pool({
     user: 'yilunwu',
-    host: 'localhost',
-    database: 'fitness',
-    password: 'password',
+    host: 'dpg-cn35ihv109ks73enhtag-a',
+    database: 'fitness_a2hw',
+    password: 'POI63mtnKUDbDKUmfa4RAiroofRlDNaj',
     port: 5432,
-})
+  });
 
 async function getFoodInfo_api(food) {
     try {
