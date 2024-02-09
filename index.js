@@ -15,7 +15,9 @@ app.use(
   })
 )
 
-
+app.get('/', (request, response) => {
+  response.send('hello world')
+});
 app.get('/users', userdb.get_users_info);
 app.get('/users/:name', userdb.get_users_info_by_name);
 app.put('/users/:name', userdb.update_user_info);
