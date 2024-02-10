@@ -1,6 +1,6 @@
 const Pool = require('pg').Pool
 
-const pool = new Pool({
+const env_pool = new Pool({
     user: process.env.VUE_APP_USER,
     host: process.env.VUE_APP_HOST,
     database: process.env.VUE_APP_DATABASE,
@@ -9,5 +9,5 @@ const pool = new Pool({
 });
 
 module.exports = {
-    pool
+    env_pool
 }

@@ -1,6 +1,6 @@
 const { request, response } = require('express');
-const { pool } = require('../config');
-const pool = pool;
+const { env_pool } = require('../config');
+const pool = env_pool;
 
 class Nutrition {
   constructor(tdee) {
