@@ -1,13 +1,7 @@
 const { request, response } = require('express');
-const Pool = require('pg').Pool
+// const Pool = require('pg').Pool
 
-const pool = new Pool({
-    user: 'yilunwu',
-    host: 'dpg-cn35ihv109ks73enhtag-a',
-    database: 'fitness_a2hw',
-    password: 'POI63mtnKUDbDKUmfa4RAiroofRlDNaj',
-    port: 5432,
-});
+const pool = db_config.render_pool;
 
 const post_intake = async (request, response, next) => {
     const { user_id, food_name, amount } = request.body;

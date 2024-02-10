@@ -1,17 +1,8 @@
 const { request, response } = require('express');
 const app_id = 'cae8d934';
 const app_key = 'c976bc0181f55b17746ee0f242d811d2';
-const Pool = require('pg').Pool
-
-
-const pool = new Pool({
-    user: 'yilunwu',
-    host: 'dpg-cn35ihv109ks73enhtag-a',
-    database: 'fitness_a2hw',
-    password: 'POI63mtnKUDbDKUmfa4RAiroofRlDNaj',
-    port: 5432,
-  });
-
+// const Pool = require('pg').Pool
+const pool = db_config.render_pool;
 async function getFoodInfo_api(food) {
     try {
         const response = await fetch(

@@ -1,12 +1,7 @@
 const { request, response } = require('express');
-const Pool = require('pg').Pool
-const pool = new Pool({
-  user: 'yilunwu',
-  host: 'dpg-cn35ihv109ks73enhtag-a',
-  database: 'fitness_a2hw',
-  password: 'POI63mtnKUDbDKUmfa4RAiroofRlDNaj',
-  port: 5432,
-});
+const db_config = require("../config");
+// c
+const pool = db_config.render_pool;
 
 class Nutrition {
   constructor(tdee) {
