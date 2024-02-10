@@ -1,5 +1,5 @@
 const { request, response } = require('express');
-const db_config = require("../config");
+import db_config from '../config/db_config'
 // c
 const pool = db_config.render_pool;
 

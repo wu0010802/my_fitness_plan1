@@ -1,6 +1,6 @@
 const { request, response } = require('express');
-// const Pool = require('pg').Pool
-
+// const Pool = require('pg').Pool;
+import db_config from '../config/db_config'
 const pool = db_config.render_pool;
 
 const post_intake = async (request, response, next) => {
