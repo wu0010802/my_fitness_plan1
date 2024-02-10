@@ -73,7 +73,7 @@ const get_users_info_by_name = (request, response) => {
     if (error) {
       throw error;
     }
-    response.status(200).json(results.rows);
+    response.status(200).json(results.rows[0]);
   });
 };
 

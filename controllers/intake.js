@@ -63,6 +63,19 @@ const get_daily_intake_list = async (request, response, next) => {
 
 
 
+const get_daily_intake_sum = async (request, response, next) => {
+    try {
+       
+
+    } catch(error) {
+        console.error(error);
+        next(error);
+    }
+}
+
+
+
+
 
 module.exports = {
     // get_daily_intake_nutrition,
