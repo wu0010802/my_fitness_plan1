@@ -1,6 +1,3 @@
-require('dotenv').config({
-  path: process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.dev'
-});
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
