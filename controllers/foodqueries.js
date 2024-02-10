@@ -1,9 +1,8 @@
 const { request, response } = require('express');
-const { render_pool, local_pool } = require('../config');
+const { pool } = require('../config');
 const app_id = 'cae8d934';
 const app_key = 'c976bc0181f55b17746ee0f242d811d2';
-// const Pool = require('pg').Pool;
-const pool = render_pool;
+const pool = pool;
 async function getFoodInfo_api(food) {
     try {
         const response = await fetch(

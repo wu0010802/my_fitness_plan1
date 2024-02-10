@@ -1,30 +1,13 @@
 const Pool = require('pg').Pool
 
-
-
-const render_pool = new Pool({
-    user: 'yilunwu',
-    host: 'dpg-cn35ihv109ks73enhtag-a',
-    database: 'fitness_a2hw',
-    password: 'POI63mtnKUDbDKUmfa4RAiroofRlDNaj',
-    port: 5432,
+const pool = new Pool({
+    user: process.env.VUE_APP_USER,
+    host: process.env.VUE_APP_HOST,
+    database: process.env.VUE_APP_DATABASE,
+    password: process.env.VUE_APP_PASSWORD,
+    port: process.env.VUE_APP_PORT,
 });
-
-
-const local_pool = new Pool({
-    user: 'yilunwu',
-    host: 'localhost',
-    database: 'fitness',
-    password: 'password',
-    port: 5432,
-});
-
-
-
-
 
 module.exports = {
-    // get_daily_intake_nutrition,
-    render_pool,
-    local_pool
+    pool
 }

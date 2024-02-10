@@ -1,6 +1,6 @@
 const { request, response } = require('express');
-const { render_pool, local_pool } = require('../config');
-const pool = render_pool;
+const { pool } = require('../config');
+const pool = pool;
 
 class Nutrition {
   constructor(tdee) {

@@ -1,7 +1,6 @@
 const { request, response } = require('express');
-// const Pool = require('pg').Pool;
-const { render_pool, local_pool } = require('../config');
-const pool = render_pool;
+const { pool } = require('../config');
+const pool = pool;
 
 const post_intake = async (request, response, next) => {
     const { user_id, food_name, amount } = request.body;
