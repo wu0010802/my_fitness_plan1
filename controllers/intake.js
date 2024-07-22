@@ -2,6 +2,9 @@ const { request, response } = require('express');
 const { env_pool } = require('../config');
 const pool = env_pool;
 
+
+
+
 const post_intake = async (request, response, next) => {
     const { user_id, food_name, amount } = request.body;
     const now = new Date();
