@@ -1,5 +1,6 @@
 const sequelize = require('../database/sequelize')
-const { DataTypes } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
+
 
 
 const UserInfo = sequelize.define('UserInfo', {
@@ -29,5 +30,8 @@ const UserInfo = sequelize.define('UserInfo', {
     tableName: 'user_info',
     timestamps: false
 });
+
+
+
 
 module.exports = UserInfo;
