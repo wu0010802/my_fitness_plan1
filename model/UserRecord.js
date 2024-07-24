@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 
 
 
-const UserInfo = sequelize.define('UserInfo', {
+const UserRecord = sequelize.define('UserRecord', {
     info_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -11,11 +11,10 @@ const UserInfo = sequelize.define('UserInfo', {
     },
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
+      references: {
+        model: UserInfo,
+        key: 'user_id'
+      }
     },
     height: {
       type: DataTypes.NUMERIC(5, 2),
@@ -60,8 +59,8 @@ const UserInfo = sequelize.define('UserInfo', {
     },
   }, {
     timestamps: false,
-    tableName: 'user_info',
+    tableName: 'user_record',
   });
   
-  module.exports = UserInfo;
+  module.exports = UserRecord;
 

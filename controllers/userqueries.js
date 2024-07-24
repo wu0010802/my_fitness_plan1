@@ -1,6 +1,9 @@
 const { request, response } = require('express');
-// const { env_pool } = require('../config');
-const pool = env_pool;
+const UserRecord = require('../model/UserRecord');
+const UserInfo = require('../model/Userinfo');
+const sequelize = require('../database/sequelize');
+const { Op } = require('sequelize');
+
 
 class Nutrition {
   constructor(tdee) {
@@ -50,84 +53,8 @@ function bmi_calculate(weight, height) {
 }
 
 
-const get_users_info = (request, response) => {
 
-  pool.query('SELECT * FROM user_info ORDER BY user_id ASC', (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows);
-  });
-}
-
-const get_users_info_by_name = (request, response) => {
-  const name = request.params.name;
-
-  pool.query('SELECT * FROM user_info WHERE name = $1', [name], (error, results) => {
-    if (error) {
-      throw error;
-    }
-    response.status(200).json(results.rows[0]);
-  });
-};
-
-const post_user_info = (request, response, next) => {
-  const { name, height, weight, age, gender, exercise_per_week } = request.body;
-  const bmr = BMR_calculate(gender, weight, height, age);
-  const bmi = bmi_calculate(weight, height);
-  const now = new Date();
-  const tdee = TDEE_calculate(exercise_per_week, bmr);
-  const nutrition = new Nutrition(tdee);
-  const target_protein = nutrition.target_protein();
-  const target_fat = nutrition.target_fat();
-  const target_carbohydrate = nutrition.target_carbohydrate();
-
-  pool.query('INSERT INTO user_info (name, weight, height, age, gender, date,bmi,tdee,protein,fat,carbohydrates) VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9,$10,$11) RETURNING *',
-    [name, height, weight, age, gender, now, bmi, tdee, target_protein, target_fat, target_carbohydrate], (error, results) => {
-      if (error) {
-        next(error);
-      } else {
-        response.status(201).send(`User added with ID: ${results.rows[0].name}`);
-      }
-    });
-};
-
-const update_user_info = (request, response, next) => {
-  const name = request.params.name;
-  const { weight, height, age, gender, exercise_per_week } = request.body;
-  const bmr = BMR_calculate(gender, weight, height, age);
-  const bmi = bmi_calculate(weight, height);
-  const tdee = TDEE_calculate(exercise_per_week, bmr);
-
-  pool.query('UPDATE user_info SET weight = $2,gender=$5 ,height = $3, age = $4,bmi =$6,tdee = $7 WHERE name = $1 RETURNING *', [name, weight, height, age, gender, bmi, tdee], (error, results) => {
-    if (error) {
-      next(error);
-    }
-    if (results.rows.length > 0) {
-
-      response.status(200).json(results.rows[0]);
-    } else {
-
-      response.status(404).send(`User not found with name: ${name}`);
-    }
-  });
-}
-
-const deleteUser = (request, response) => {
-  const name = request.params.name;
-
-  pool.query('DELETE FROM user_info WHERE name = $1', [name], (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).send(`User deleted with ID: ${name}`)
-  })
-}
 
 module.exports = {
-  post_user_info,
-  get_users_info,
-  get_users_info_by_name,
-  update_user_info,
-  deleteUser,
+
 }

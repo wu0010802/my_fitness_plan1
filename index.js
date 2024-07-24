@@ -2,13 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
+const userdb = require('./controllers/userqueries');
 
-
-// const userdb = require('./controllers/userqueries');
-// const fooddb = require('./controllers/foodqueries');
-// const nutrition = require('./controllers/intake')
-
-const User = require('./model/User')
 
 
 
@@ -179,7 +174,7 @@ app.use(
 
 
 
-// app.get('/users', userdb.get_users_info);
+
 // app.get('/users/:name', userdb.get_users_info_by_name);
 // app.put('/users/:name', userdb.update_user_info);
 // app.post('/users', userdb.post_user_info);
@@ -190,11 +185,14 @@ app.use(
 // app.get('/intake_list', nutrition.get_daily_intake_list);
 
 
-app.get('/users',function(req,res){
-    User.findAll().then((users)=>{
-      res.json(users)
-    })
-})
+
+
+
+
+
+
+
+
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
