@@ -1,6 +1,10 @@
 const sequelize = require('../database/sequelize')
 const { Sequelize, DataTypes } = require('sequelize');
 
+const UserRecord = require('./UserRecord');
+const IntakeLogs = require('./IntakeLogs');
+const FoodInfo = require('./FoodInfo');
+
 
 
 const UserInfo = sequelize.define('UserInfo', {

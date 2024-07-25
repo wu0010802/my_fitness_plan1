@@ -1,6 +1,8 @@
 const { request, response } = require('express');
 const UserRecord = require('../model/UserRecord');
-const UserInfo = require('../model/Userinfo');
+const UserInfo = require('../model/UserInfo');
+const IntakeLogs = require('../model/IntakeLogs');
+const FoodInfo = require('../model/FoodInfo');
 const sequelize = require('../database/sequelize');
 const { Op } = require('sequelize');
 
@@ -53,11 +55,48 @@ function bmi_calculate(weight, height) {
 }
 
 
+UserInfo.hasMany(UserRecord, { foreignKey: 'user_id' })
+UserRecord.belongsTo(UserInfo, { foreignKey: 'user_id' })
 
- 
+
+const get_user_records = async (request, response) => {
+  const user_id = request.params.id;
+  try {
+    const userRecords = await UserInfo.findOne({
+      where: { user_id: user_id },
+      include: [
+        {
+          model: UserRecord
+        }
+      ]
+    });
+
+    if (userRecords) {
+      response.json(userRecords);
+    } else {
+      response.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching user records:', error);
+    response.status(500).json({ error: 'Failed to fetch user records' });
+  }
+};
+
+// const post_user_record = async (request,response)=>{
+//   const {height,weight,age,gender} = req.body;
+//   const date = Date.now
+//   const tdee = 
 
 
 
+
+
+//   try{
+//     const new_record = UserRecord.create
+//   }catch(error){
+
+//   }
+// }
 
 
 
@@ -65,5 +104,5 @@ function bmi_calculate(weight, height) {
 
 
 module.exports = {
-
+  get_user_records
 }

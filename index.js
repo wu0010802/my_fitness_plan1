@@ -1,11 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const sequelize = require('./database/sequelize')
 
-const userController = require('./controllers/userqueries');
-
-
-
+const userRoutes = require('./routes/userRoutes');
 
 const cors = require('cors');
 const port = process.env.PORT || 3000
@@ -23,6 +21,60 @@ app.use(
     extended: true,
   })
 )
+
+app.use('/api',userRoutes)
+// (async () => {
+//   await sequelize.sync({ force: true });
+//   console.log('Database & tables created!');
+// })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.send({
+    error: {
+      status: err.status || 500,
+      message: err.message || 'Internal Server Error',
+    },
+  });
+});
+
+app.listen(port, () => {
+  console.log(`App running on port ${port}.`)
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // app.use(helmet());
 
 
@@ -171,26 +223,5 @@ app.use(
 //     }
 //   }
 // };
-
-
-
-
-
-
-
-app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  res.send({
-    error: {
-      status: err.status || 500,
-      message: err.message || 'Internal Server Error',
-    },
-  });
-});
-
-app.listen(port, () => {
-  console.log(`App running on port ${port}.`)
-});
-
 
 

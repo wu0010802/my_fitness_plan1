@@ -16,8 +16,24 @@ async function getFoodInfo_api(food) {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
     getFoodInfo_api,
     get_food_info
 }
+
+
+
+
 
