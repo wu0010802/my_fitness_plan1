@@ -1,41 +1,27 @@
-const sequelize = require('../database/sequelize')
-const { Sequelize, DataTypes } = require('sequelize');
-
-const UserRecord = require('./UserRecord');
-const IntakeLogs = require('./IntakeLogs');
-const FoodInfo = require('./FoodInfo');
-
-
+const sequelize = require('../database/sequelize');
+const { DataTypes } = require('sequelize');
 
 const UserInfo = sequelize.define('UserInfo', {
-    user_id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    created_at: {
-        type: DataTypes.DATE,
-        defaultValue: Sequelize.NOW,
-        allowNull: false,
-    }
+  user_id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 }, {
-    tableName: 'user_info',
-    timestamps: false
+  timestamps: false,
+  tableName: 'user_info'
 });
-
-
-
 
 module.exports = UserInfo;

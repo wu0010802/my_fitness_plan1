@@ -61,6 +61,7 @@ UserRecord.belongsTo(UserInfo, { foreignKey: 'user_id' })
 
 const get_user_records = async (request, response) => {
   const user_id = request.params.id;
+
   try {
     const userRecords = await UserInfo.findOne({
       where: { user_id: user_id },
@@ -82,27 +83,130 @@ const get_user_records = async (request, response) => {
   }
 };
 
-// const post_user_record = async (request,response)=>{
-//   const {height,weight,age,gender} = req.body;
-//   const date = Date.now
-//   const tdee = 
+const post_user_record = async (request, response) => {
+  const { height, weight, age, gender, exercise_per_week } = request.body;
+  const bmr = BMR_calculate(gender, weight, height, age);
+  const bmi = bmi_calculate(weight, height);
+  const now = new Date();
+  const tdee = TDEE_calculate(exercise_per_week, bmr);
+  const nutrition = new Nutrition(tdee);
+  const target_protein = nutrition.target_protein();
+  const target_fat = nutrition.target_fat();
+  const target_carbohydrate = nutrition.target_carbohydrate();
+  const user_id = request.params.id;
+  try {
+    const newUserRecord = await UserRecord.create({
+      user_id,
+      height,
+      weight,
+      age,
+      gender,
+      date: now,
+      protein: target_protein,
+      carbohydrates: target_carbohydrate,
+      fat: target_fat,
+      bmi,
+      tdee
+    });
+    response.status(201).json(newUserRecord);
+
+  } catch (error) {
+    console.error('Error creating new user record:', error);
+    response.status(500).json({ error: 'Failed to create new user record' });
+  }
+
+}
 
 
+const update_user_record = async (request, response) => {
+  const { user_id, height, weight, age, gender, exercise_per_week } = request.body;
+  const now = new Date().toISOString().split('T')[0]; 
 
+  const bmr = BMR_calculate(gender, weight, height, age);
+  const bmi = bmi_calculate(weight, height);
+  const tdee = TDEE_calculate(exercise_per_week, bmr);
+  const nutrition = new Nutrition(tdee);
+  const target_protein = nutrition.target_protein();
+  const target_fat = nutrition.target_fat();
+  const target_carbohydrate = nutrition.target_carbohydrate();
 
+  try {
+    
+    const existingRecord = await UserRecord.findOne({
+      where: {
+        user_id: user_id,
+        date: now
+      }
+    });
 
-//   try{
-//     const new_record = UserRecord.create
-//   }catch(error){
+    if (existingRecord) {
+      
+      const updatedRecord = await UserRecord.update({
+        height,
+        weight,
+        age,
+        gender,
+        protein: target_protein,
+        carbohydrates: target_carbohydrate,
+        fat: target_fat,
+        bmi,
+        tdee
+      }, {
+        where: {
+          user_id: user_id,
+          date: now
+        }
+      });
 
-//   }
-// }
+      return response.status(200).json(updatedRecord);
+    } else {
+      const newUserRecord = await UserRecord.create({
+        user_id,
+        height,
+        weight,
+        age,
+        gender,
+        date: now,  // 使用當前日期
+        protein: target_protein,
+        carbohydrates: target_carbohydrate,
+        fat: target_fat,
+        bmi,
+        tdee
+      });
 
+      return response.status(201).json(newUserRecord);
+    }
+  } catch (error) {
+    console.error('Error creating or updating user record:', error);
+    return response.status(500).json({ error: 'Failed to create or update user record' });
+  }
+};
 
 
 
 
 
 module.exports = {
-  get_user_records
+  get_user_records,
+  post_user_record,
+  update_user_record
 }
+
+
+
+
+
+
+
+
+
+
+// const deleteUser = (request, response) => {
+//   const name = request.params.name;
+
+//   pool.query('DELETE FROM user_info WHERE name = $1', [name], (error, results) => {
+//     if (error) {
+//       throw error
+//     }
+//     response.status(200).send(`User deleted with ID: ${name}`)
+//   })

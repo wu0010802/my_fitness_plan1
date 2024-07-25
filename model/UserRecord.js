@@ -1,13 +1,5 @@
-const sequelize = require('../database/sequelize')
+const sequelize = require('../database/sequelize');
 const { DataTypes } = require('sequelize');
-const UserInfo = require('./UserInfo');
-
-const IntakeLogs = require('./IntakeLogs');
-const FoodInfo = require('./FoodInfo');
-
-
-
-
 
 const UserRecord = sequelize.define('UserRecord', {
   info_id: {
@@ -17,10 +9,7 @@ const UserRecord = sequelize.define('UserRecord', {
   },
   user_id: {
     type: DataTypes.INTEGER,
-    references: {
-      model: UserInfo,
-      key: 'user_id'
-    }
+    allowNull: false
   },
   height: {
     type: DataTypes.NUMERIC(5, 2),
@@ -40,35 +29,37 @@ const UserRecord = sequelize.define('UserRecord', {
   },
   date: {
     type: DataTypes.DATEONLY,
-    defaultValue: DataTypes.NOW,
-    allowNull: true,
+    allowNull: false,
   },
   protein: {
-    type: DataTypes.NUMERIC(6, 2),
+    type: DataTypes.NUMERIC(8, 2),
     allowNull: true,
   },
   carbohydrates: {
-    type: DataTypes.NUMERIC(6, 2),
+    type: DataTypes.NUMERIC(8, 2),
     allowNull: true,
   },
   fat: {
-    type: DataTypes.NUMERIC(6, 2),
+    type: DataTypes.NUMERIC(8, 2),
     allowNull: true,
   },
   bmi: {
-    type: DataTypes.NUMERIC(6, 2),
+    type: DataTypes.NUMERIC(8, 2),
     allowNull: true,
   },
   tdee: {
-    type: DataTypes.NUMERIC(6, 2),
+    type: DataTypes.NUMERIC(8, 2),
     allowNull: true,
   },
 }, {
   timestamps: false,
   tableName: 'user_record',
+  indexes: [
+    {
+      unique: true,
+      fields: ['user_id', 'date']
+    }
+  ]
 });
 
-
-
 module.exports = UserRecord;
-
