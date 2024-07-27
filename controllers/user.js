@@ -54,6 +54,37 @@ function bmi_calculate(weight, height) {
   return Number(bmi.toFixed(2))
 }
 
+async function createUser(data) {
+  const { height, weight, age, gender, exercise_per_week } = data.body;
+  const bmr = BMR_calculate(gender, weight, height, age);
+  const bmi = bmi_calculate(weight, height);
+  const now = new Date();
+  const tdee = TDEE_calculate(exercise_per_week, bmr);
+  const nutrition = new Nutrition(tdee);
+  const target_protein = nutrition.target_protein();
+  const target_fat = nutrition.target_fat();
+  const target_carbohydrate = nutrition.target_carbohydrate();
+  const user_id = data.params.id;
+
+  try {
+    return await UserRecord.create({
+      user_id,
+      height,
+      weight,
+      age,
+      gender,
+      date: now,
+      protein: target_protein,
+      carbohydrates: target_carbohydrate,
+      fat: target_fat,
+      bmi,
+      tdee
+    })
+  } catch (e) {
+    throw e
+  }
+}
+
 
 UserInfo.hasMany(UserRecord, { foreignKey: 'user_id' })
 UserRecord.belongsTo(UserInfo, { foreignKey: 'user_id' })
@@ -84,31 +115,10 @@ const get_user_records = async (request, response) => {
 };
 
 const post_user_record = async (request, response) => {
-  const { height, weight, age, gender, exercise_per_week } = request.body;
-  const bmr = BMR_calculate(gender, weight, height, age);
-  const bmi = bmi_calculate(weight, height);
-  const now = new Date();
-  const tdee = TDEE_calculate(exercise_per_week, bmr);
-  const nutrition = new Nutrition(tdee);
-  const target_protein = nutrition.target_protein();
-  const target_fat = nutrition.target_fat();
-  const target_carbohydrate = nutrition.target_carbohydrate();
-  const user_id = request.params.id;
+
   try {
-    const newUserRecord = await UserRecord.create({
-      user_id,
-      height,
-      weight,
-      age,
-      gender,
-      date: now,
-      protein: target_protein,
-      carbohydrates: target_carbohydrate,
-      fat: target_fat,
-      bmi,
-      tdee
-    });
-    response.status(201).json(newUserRecord);
+    const record = await createUser(request)
+    return response.status(201).json(record);
 
   } catch (error) {
     console.error('Error creating new user record:', error);
@@ -119,8 +129,9 @@ const post_user_record = async (request, response) => {
 
 
 const update_user_record = async (request, response) => {
-  const { user_id, height, weight, age, gender, exercise_per_week } = request.body;
-  const now = new Date().toISOString().split('T')[0]; 
+  const user_id = request.params.id
+  const { height, weight, age, gender, exercise_per_week } = request.body;
+  const now = new Date().toISOString().split('T')[0];
 
   const bmr = BMR_calculate(gender, weight, height, age);
   const bmi = bmi_calculate(weight, height);
@@ -131,56 +142,69 @@ const update_user_record = async (request, response) => {
   const target_carbohydrate = nutrition.target_carbohydrate();
 
   try {
-    
-    const existingRecord = await UserRecord.findOne({
+
+    const record = await UserRecord.findOne({
       where: {
         user_id: user_id,
         date: now
       }
     });
+    await record.update({
+      height,
+      weight,
+      age,
+      gender,
+      exercise_per_week,
+      protein: target_protein,
+      carbohydrates: target_carbohydrate,
+      fat: target_fat,
+      bmi,
+      tdee
+    })
+    await record.save()
 
-    if (existingRecord) {
-      
-      const updatedRecord = await UserRecord.update({
-        height,
-        weight,
-        age,
-        gender,
-        protein: target_protein,
-        carbohydrates: target_carbohydrate,
-        fat: target_fat,
-        bmi,
-        tdee
-      }, {
-        where: {
-          user_id: user_id,
-          date: now
-        }
-      });
+    return response.status(200).json({
+      data: record,
+      code: 201,
+      success: true
+    });
 
-      return response.status(200).json(updatedRecord);
-    } else {
-      const newUserRecord = await UserRecord.create({
-        user_id,
-        height,
-        weight,
-        age,
-        gender,
-        date: now,  // 使用當前日期
-        protein: target_protein,
-        carbohydrates: target_carbohydrate,
-        fat: target_fat,
-        bmi,
-        tdee
-      });
-
-      return response.status(201).json(newUserRecord);
-    }
   } catch (error) {
-    console.error('Error creating or updating user record:', error);
-    return response.status(500).json({ error: 'Failed to create or update user record' });
+    console.error('Error updating user record:', error);
+    return response.status(500).json({ error: 'Failed to update user record' });
   }
 };
+
+
+const delete_user_record = async (request, response) => {
+  const user_id = request.params.id;
+  const now = new Date().toISOString().split('T')[0];
+  const select_date = request.query.date;
+
+  const filter = {
+    where: {
+      user_id: user_id,
+      date: now
+    }
+  };
+
+  if (select_date) {
+    filter.where.date = select_date;
+  }
+
+  try {
+    const deleted_user = await UserRecord.destroy(filter);
+
+    if (deleted_user) {
+      response.status(200).json({ message: "User record has been deleted" });
+    } else {
+      throw new Error("Failed to delete user record");
+    }
+  } catch (error) {
+    response.status(500).json({ message: error.message });
+  }
+};
+
 
 
 
@@ -189,7 +213,8 @@ const update_user_record = async (request, response) => {
 module.exports = {
   get_user_records,
   post_user_record,
-  update_user_record
+  update_user_record,
+  delete_user_record
 }
 
 
@@ -199,14 +224,3 @@ module.exports = {
 
 
 
-
-
-// const deleteUser = (request, response) => {
-//   const name = request.params.name;
-
-//   pool.query('DELETE FROM user_info WHERE name = $1', [name], (error, results) => {
-//     if (error) {
-//       throw error
-//     }
-//     response.status(200).send(`User deleted with ID: ${name}`)
-//   })

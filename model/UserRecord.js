@@ -1,5 +1,6 @@
 const sequelize = require('../database/sequelize');
 const { DataTypes } = require('sequelize');
+const UserInfo = require('./UserInfo')
 
 const UserRecord = sequelize.define('UserRecord', {
   info_id: {
@@ -9,7 +10,7 @@ const UserRecord = sequelize.define('UserRecord', {
   },
   user_id: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   },
   height: {
     type: DataTypes.NUMERIC(5, 2),

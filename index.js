@@ -25,7 +25,6 @@ app.use(
 app.use('/api',userRoutes)
 
 
-
 const startServer = async () => {
   try {
     await sequelize.sync({ alter: true });
@@ -36,19 +35,11 @@ const startServer = async () => {
     });
   } catch (error) {
     console.error('Failed to sync database:', error);
-    process.exit(1); // 在遇到致命錯誤時退出進程
+    process.exit(1); 
   }
 };
 
 startServer();
-
-
-
-
-
-
-
-
 
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
