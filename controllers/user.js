@@ -91,19 +91,24 @@ UserRecord.belongsTo(UserInfo, { foreignKey: 'user_id' })
 
 
 const get_user_records = async (request, response) => {
-  const user_id = request.params.id;
+  const user_id = request.query.user_id;
+  let filter = {}; 
+
+  if (user_id) {
+    filter = {
+      where: { user_id: user_id },
+      include: [{ model: UserRecord }]
+    };
+  } else {
+    filter = {
+      include: [{ model: UserRecord }]
+    };
+  }
 
   try {
-    const userRecords = await UserInfo.findOne({
-      where: { user_id: user_id },
-      include: [
-        {
-          model: UserRecord
-        }
-      ]
-    });
+    const userRecords = await UserInfo.findAll(filter);
 
-    if (userRecords) {
+    if (userRecords && userRecords.length > 0) {
       response.json(userRecords);
     } else {
       response.status(404).json({ error: 'User not found' });
@@ -113,6 +118,7 @@ const get_user_records = async (request, response) => {
     response.status(500).json({ error: 'Failed to fetch user records' });
   }
 };
+
 
 const post_user_record = async (request, response) => {
 

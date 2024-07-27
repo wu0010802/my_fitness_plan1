@@ -2,9 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const sequelize = require('./database/sequelize')
-
-const userRoutes = require('./routes/userRoutes');
-
 const cors = require('cors');
 const port = process.env.PORT || 3000
 const session = require("express-session");
@@ -22,8 +19,11 @@ app.use(
   })
 )
 
-app.use('/api',userRoutes)
 
+const userRoutes = require('./routes/userRoutes');
+const foodRoutes = require('./routes/foodRoutes');
+app.use('/api',userRoutes)
+app.use('/api',foodRoutes)
 
 const startServer = async () => {
   try {
