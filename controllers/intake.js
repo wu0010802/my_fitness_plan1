@@ -40,10 +40,29 @@ const get_user_intakelogs_by_user_date = async (request, response) => {
     }
 };
 
+const post_user_intakelogs = async (request, response) => {
+    const user_id = request.params.user_id;
+    const date = new Date()
+    const food_id = request.params.food_id;
+    const { amount } = request.body;
+    try {
+        const new_intake = await IntakeLogs.create({
+            user_id: user_id,
+            date: date,
+            amount: amount,
+            food_id: food_id
+        });
+        response.status(201).json({ message: "create new intake success", new_intake });
+    } catch (error) {
+        console.error('Error creating new intake log:', error);
+        response.status(500).json({ error: 'Failed to create new intake log' });
+    }
 
+}
 
 
 module.exports = {
-    get_user_intakelogs_by_user_date
+    get_user_intakelogs_by_user_date,
+    post_user_intakelogs
 }
 
