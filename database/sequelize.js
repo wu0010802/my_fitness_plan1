@@ -11,6 +11,7 @@ const sequelize = new Sequelize(
     dialect: process.env.local_sql_type,
     
   }
+  
 );
 
 module.exports = sequelize;

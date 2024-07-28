@@ -1,5 +1,5 @@
 const { request, response } = require('express');
-const FoodInfo = require('../model/FoodInfo');
+const FoodInfo = require('../models/FoodInfo');
 const app_id = 'cae8d934';
 const app_key = 'c976bc0181f55b17746ee0f242d811d2';
 

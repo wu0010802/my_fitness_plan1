@@ -25,3 +25,5 @@ const UserInfo = sequelize.define('UserInfo', {
 });
 
 module.exports = UserInfo;
+
+

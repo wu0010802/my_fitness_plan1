@@ -1,8 +1,8 @@
 const { request, response } = require('express');
-const UserRecord = require('../model/UserRecord');
-const UserInfo = require('../model/UserInfo');
-const IntakeLogs = require('../model/IntakeLogs');
-const FoodInfo = require('../model/FoodInfo');
+const UserRecord = require('../models/UserRecord');
+const UserInfo = require('../models/UserInfo');
+const IntakeLogs = require('../models/IntakeLogs');
+const FoodInfo = require('../models/FoodInfo');
 const sequelize = require('../database/sequelize');
 const { Op } = require('sequelize');
 

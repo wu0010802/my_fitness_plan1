@@ -19,11 +19,25 @@ app.use(
   })
 )
 
-
 const userRoutes = require('./routes/userRoutes');
 const foodRoutes = require('./routes/foodRoutes');
+const intakeRoutes = require('./routes/intakeRoutes');
+
+
+// const UserInfo = require('./model/UserInfo');
+// const FoodInfo = require('./model/FoodInfo');
+// const IntakeLogs = require('./model/IntakeLogs');
+
+// // 設置模型之間的關聯
+// UserInfo.belongsToMany(FoodInfo, { through: IntakeLogs, foreignKey: 'user_id' });
+// FoodInfo.belongsToMany(UserInfo, { through: IntakeLogs, foreignKey: 'food_id' });
+
+
+
+
 app.use('/api',userRoutes)
 app.use('/api',foodRoutes)
+app.use('/api',intakeRoutes)
 
 const startServer = async () => {
   try {
