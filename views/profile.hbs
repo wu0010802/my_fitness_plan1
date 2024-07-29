@@ -6,8 +6,12 @@
     <title>Profile</title>
 </head>
 <body>
-    <h1>Welcome, {{user.username}}!</h1>
+    <h1>Welcome, {{ user.username }}!</h1>
     <p>Email: {{user.email}}</p>
     <p><a href="/logout">Logout</a></p>
+    
 </body>
 </html>
+<script>
+    console.log(user)
+</script>

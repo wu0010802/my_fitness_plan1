@@ -95,7 +95,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' },
       const db_hashed_password = user.password;
       const isMatch = await comparePasswords(password, db_hashed_password);
       if (!isMatch) {
-
+        
         return done(null, false, { message: 'incorrect password' });
       }
 
@@ -114,10 +114,10 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (user_id, done) => {
   try {
     const user = await UserInfo.findByPk(user_id, {
-      attributes: ['user_id', 'username', 'email'] // 确保查询到的用户对象包含 username 和 email 字段
+      attributes: ['user_id', 'username', 'email'] 
     });
     
-    done(null, user);
+    done(null, user.dataValues);
   } catch (err) {
     done(err);
   }
@@ -134,7 +134,7 @@ router.post("/login",
 
 router.get('/profile', (req, res) => {
   if (req.isAuthenticated()) {
-    res.render('profile', { user: req.user });
+    res.render('profile', { user: req.user, msg: 'hi' });
   } else {
     res.redirect('/login');
   }
@@ -152,8 +152,10 @@ router.get('/register', (req, res) => {
 
 
 router.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect("/login");
+  req.logout(() => {
+    res.redirect("/login");
+
+  });
 });
 
 
