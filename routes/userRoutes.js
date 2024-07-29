@@ -1,5 +1,5 @@
 const express = require('express');
-const UserController = require('../controllers/user');
+const UserController = require('../controllers/userRecord');
 const router = express.Router();
 
 router.get('/user/records', UserController.get_user_records);//可以加上 ?user_id=

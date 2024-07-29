@@ -4,12 +4,12 @@ const app = express();
 const sequelize = require('./database/sequelize')
 const cors = require('cors');
 const port = process.env.PORT || 3000
-const session = require("express-session");
-const store = new session.MemoryStore();
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const bcrypt = require("bcrypt");
-const helmet = require('helmet');
+const path = require('path'); 
+
+
+const exphbs = require('express-handlebars');
+
+
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -22,11 +22,14 @@ app.use(
 const userRoutes = require('./routes/userRoutes');
 const foodRoutes = require('./routes/foodRoutes');
 const intakeRoutes = require('./routes/intakeRoutes');
+const userAuthorizeRoutes = require('./routes/userAuthorize');
 
 
-app.use('/api',userRoutes)
-app.use('/api',foodRoutes)
-app.use('/api',intakeRoutes)
+app.use('/',userRoutes)
+app.use('/',foodRoutes)
+app.use('/',intakeRoutes)
+app.use('/',userAuthorizeRoutes)
+
 
 const startServer = async () => {
   try {
@@ -54,6 +57,15 @@ app.use((err, req, res, next) => {
   });
 });
 
+
+
+const hbs = exphbs.create({ 
+  extname: '.hbs',
+  defaultLayout: false 
+});
+app.engine('hbs', hbs.engine);
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
 
 
 
