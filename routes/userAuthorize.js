@@ -9,6 +9,8 @@ const bcrypt = require("bcrypt");
 const helmet = require('helmet');
 
 const UserInfo = require('../models/UserInfo')
+const UserRecord = require('../models/UserRecord')
+const IntakeLogs = require('../models/Intakelogs')
 
 app.use(helmet());
 
@@ -132,9 +134,39 @@ router.post("/login",
 );
 
 
-router.get('/profile', (req, res) => {
+router.get('/profile', async (req, res) => {
   if (req.isAuthenticated()) {
-    res.render('profile', { user: req.user});
+    try {
+
+      const user_records = await UserRecord.findAll({
+        where: { user_id: req.user.user_id },
+        order: [['date', 'DESC']],
+        limit: 1
+      });
+      
+      // const calories_by_date = await IntakeLogs.findOne({
+      //   where:{user_id:}
+      // })
+
+      const user_record = user_records[0] ? user_records[0].dataValues : null;
+      
+      if (user_record) {
+        res.render('profile', {
+          user: {
+            ...req.user,
+            height: user_record.height,
+            weight: user_record.weight,
+            record_date: user_record.date,
+            tdee: user_record.tdee
+          }
+        })
+      } else {
+        res.render('profile', { user: req.user, message: 'No records found' });
+      }
+    } catch (error) {
+      console.error('Error fetching user records:', error);
+      res.status(500).json({ message: 'Failed to load user records' });
+    }
   } else {
     res.redirect('/login');
   }
