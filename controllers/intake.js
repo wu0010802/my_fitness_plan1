@@ -32,8 +32,28 @@ const get_user_intakelogs_by_user_date = async (request, response) => {
                 }
             ]
         });
+        const formattedLogs = intakeLogs.map(log => ({
+            amount: log.amount,
+            date: new Date(log.date).toLocaleDateString(), // 日期格式化
+            FoodInfo: {
+                food_name: log.FoodInfo.food_name,
+                calories: log.FoodInfo.calories,
+                protein: log.FoodInfo.protein,
+                fat: log.FoodInfo.fat,
+                carbohydrate: log.FoodInfo.carbohydrate
+            },
+            UserInfo: {
+                username: log.UserInfo.username
+            }
+        }));
 
-        response.status(200).json(intakeLogs);
+
+       
+
+        response.render('intakelogs', { logs: formattedLogs });
+
+        
+        
     } catch (error) {
         console.error('Error fetching intake logs:', error);
         response.status(500).json({ error: 'Failed to fetch intake logs' });

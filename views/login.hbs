@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
     <title>Login</title>
 </head>
 <body>
@@ -15,7 +16,28 @@
         <input type="password" id="password" name="password" placeholder="enter Password" required>
         <br>
         <button type="submit">Login</button>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </form>
     <p>No Account? <a href="/register">Register</a></p>
+
+    
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+        gapi.load('auth2', function() {
+            gapi.auth2.init({
+                client_id: '594286944806-h55i3un9fr0opi1j597u8lfrds9ev73j.apps.googleusercontent.com'
+            });
+        });
+
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId());
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail());
+
+            
+        }
+    </script>
 </body>
 </html>

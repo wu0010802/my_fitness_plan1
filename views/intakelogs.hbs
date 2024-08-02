@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles2.css">
+    <title>Intake Logs</title>
+</head>
+
+<body>
+    {{!-- <h1>Intake Logs for {{logs[0].UserInfo.username}}</h1> --}}
+    <ul>
+        {{#each logs}}
+        <li>
+            <strong>Food:</strong> {{this.FoodInfo.food_name}}<br>
+            <strong>Amount:</strong> {{this.amount}} grams<br>
+            <strong>Date:</strong> {{this.date}}<br>
+            <strong>Calories:</strong> {{this.FoodInfo.calories}} kcal<br>
+            <strong>Protein:</strong> {{this.FoodInfo.protein}} g<br>
+            <strong>Fat:</strong> {{this.FoodInfo.fat}} g<br>
+            <strong>Carbohydrate:</strong> {{this.FoodInfo.carbohydrate}} g<br>
+        </li>
+        {{/each}}
+    </ul>
+
+    <a href="/profile">Back to Profile</a>
+</body>
+
+</html>

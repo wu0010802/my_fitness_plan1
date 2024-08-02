@@ -4,12 +4,9 @@ const app = express();
 const sequelize = require('./database/sequelize')
 const cors = require('cors');
 const port = process.env.PORT || 3000
-const path = require('path'); 
-
+const path = require('path');
 
 const exphbs = require('express-handlebars');
-
-
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -24,24 +21,22 @@ const foodRoutes = require('./routes/foodRoutes');
 const intakeRoutes = require('./routes/intakeRoutes');
 const userAuthorizeRoutes = require('./routes/userAuthorize');
 
-
-app.use('/',userRoutes)
-app.use('/',foodRoutes)
-app.use('/',intakeRoutes)
-app.use('/',userAuthorizeRoutes)
-
+app.use('/', userRoutes)
+app.use('/', foodRoutes)
+app.use('/', intakeRoutes)
+app.use('/', userAuthorizeRoutes)
 
 const startServer = async () => {
   try {
     await sequelize.sync({ alter: true });
     console.log('Database & tables created or updated!');
-    
+
     app.listen(port, () => {
       console.log(`App running on port ${port}.`);
     });
   } catch (error) {
     console.error('Failed to sync database:', error);
-    process.exit(1); 
+    process.exit(1);
   }
 };
 
@@ -59,13 +54,16 @@ app.use((err, req, res, next) => {
 
 
 
-const hbs = exphbs.create({ 
+const hbs = exphbs.create({
   extname: '.hbs',
-  defaultLayout: false 
+  defaultLayout: false
 });
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static('public'));
+
 
 
 
