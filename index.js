@@ -6,7 +6,27 @@ const cors = require('cors');
 const port = process.env.PORT || 3000
 const path = require('path');
 
+const passport = require("passport");
+const session = require("express-session");
+const store = new session.MemoryStore();
+
 const exphbs = require('express-handlebars');
+
+
+
+app.use(
+  session({
+    secret: "fitness",
+    cookie: { maxAge: 300000000, secure: false },
+    saveUninitialized: false,
+    resave: false,
+    store: store
+  })
+)
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -19,7 +39,7 @@ app.use(
 const userRoutes = require('./routes/userRoutes');
 const foodRoutes = require('./routes/foodRoutes');
 const intakeRoutes = require('./routes/intakeRoutes');
-const userAuthorizeRoutes = require('./routes/userAuthorize');
+const {router:userAuthorizeRoutes} = require('./routes/userAuthorize');
 
 app.use('/', userRoutes)
 app.use('/', foodRoutes)

@@ -1,8 +1,6 @@
 const express = require('express')
 const app = express();
 const router = express.Router()
-const session = require("express-session");
-const store = new session.MemoryStore();
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
@@ -10,9 +8,21 @@ const helmet = require('helmet');
 
 const UserInfo = require('../models/UserInfo')
 const UserRecord = require('../models/UserRecord')
-const IntakeLogs = require('../models/Intakelogs')
+const IntakeLogs = require('../models/IntakeLogs')
+
+const { total_calories } = require('../controllers/intake')
 
 app.use(helmet());
+
+const  ensureAuthenticated = (req, res, next) =>{
+  if (req.isAuthenticated()) {
+      return next();
+  }
+  res.redirect('/login');
+};
+
+
+
 
 const passwordHash = async (password, saltRounds = 10) => {
   try {
@@ -63,7 +73,6 @@ router.post('/register', async (req, res) => {
       password: hashedPassword
     });
 
-    // res.json({ message: 'User registered successfully' });
     res.render('login')
   } catch (error) {
     console.error('Error creating new user record:', error);
@@ -72,18 +81,6 @@ router.post('/register', async (req, res) => {
 });
 
 
-router.use(
-  session({
-    secret: "fitness",
-    cookie: { maxAge: 300000000, secure: false },
-    saveUninitialized: false,
-    resave: false,
-    store: store
-  })
-)
-
-router.use(passport.initialize());
-router.use(passport.session());
 
 
 passport.use(new LocalStrategy({ usernameField: 'email' },
@@ -143,13 +140,12 @@ router.get('/profile', async (req, res) => {
         order: [['date', 'DESC']],
         limit: 1
       });
-      
-      // const calories_by_date = await IntakeLogs.findOne({
-      //   where:{user_id:}
-      // })
 
+
+      const calories = await total_calories(req,res);
+      console.log('second calories:',calories)
       const user_record = user_records[0] ? user_records[0].dataValues : null;
-      
+
       if (user_record) {
         res.render('profile', {
           user: {
@@ -157,7 +153,7 @@ router.get('/profile', async (req, res) => {
             height: user_record.height,
             weight: user_record.weight,
             record_date: user_record.date,
-            tdee: user_record.tdee
+            calories: calories    
           }
         })
       } else {
@@ -190,12 +186,10 @@ router.get("/logout", (req, res) => {
   });
 });
 
-
-
-
-
-
-module.exports = router
+module.exports = {
+  router,
+  ensureAuthenticated
+};
 
 
 

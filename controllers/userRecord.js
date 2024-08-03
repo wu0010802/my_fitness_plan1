@@ -121,9 +121,9 @@ const get_user_records = async (request, response) => {
 
 
 const post_user_record = async (request, response) => {
-
+  // const {}
   try {
-    const record = await createUser(request)
+    const record = await createUser()
     return response.status(201).json(record);
 
   } catch (error) {

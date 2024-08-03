@@ -4,50 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .profile-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
-
-        h1 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        p {
-            color: #555;
-            font-size: 16px;
-            margin: 10px 0;
-        }
-
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/profile.css">
 </head>
 <body>
     <div class="profile-container">
@@ -55,10 +12,59 @@
         <p>Height: {{ user.height }} cm</p>
         <p>Weight: {{ user.weight }} kg</p>
         <p>Record Date: {{ user.record_date }}</p>
-        <p>TDEE: {{ user.tdee }} kcal/day</p>
+        <p>Calories: {{ user.calories }} kcal</p>
+
+        <!-- 新增吃的食物 -->
+        <form id="foodForm" action="/user/intake" method="POST">
+            <label for="food_name">Choose a food:</label>
+            <input type="text" id="foodName" name="food_name" placeholder="Enter Food Name" required>
+            <input type="number" id="amount" name="amount" min="0" placeholder="Enter Amount (grams)" required>
+            <button type="submit">Add Food Intake</button>
+            <button type="button" id="previewBtn">Preview Nutrition Info</button>
+        </form>
+
+        <!-- 顯示預覽結果的區域 -->
+        <div id="foodPreview"></div>
+
+        <!-- 新增按鈕來查詢今天的食物攝取日誌 -->
+        <h2>Check Today's Intake Logs</h2>
+        <button type="button" id="logBtn">Get Intake Logs</button>
+
         <p><a href="/logout">Logout</a></p>
     </div>
+    <script>
+        document.getElementById('previewBtn').addEventListener('click', async function() {
+            const foodName = document.getElementById('foodName').value;
+
+            if (!foodName) {
+                alert('Please enter a food name.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/food?food=${foodName}`);
+                const foodData = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('foodPreview').innerHTML = `
+                        <p><strong>${foodData.food_name}</strong></p>
+                        <p>Calories: ${foodData.calories} kcal</p>
+                        <p>Protein: ${foodData.protein} g</p>
+                        <p>Fat: ${foodData.fat} g</p>
+                        <p>Carbohydrate: ${foodData.carbohydrate} g</p>
+                    `;
+                } else {
+                    document.getElementById('foodPreview').innerHTML = `<p>Error: ${foodData.error}</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching food info:', error);
+                document.getElementById('foodPreview').innerHTML = `<p>Failed to fetch food info.</p>`;
+            }
+        });
+
+        document.getElementById('logBtn').addEventListener('click', function() {
+            window.location.href = '/user/intake';
+        });
+    </script>
 </body>
 </html>
-<script>
-</script>

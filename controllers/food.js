@@ -1,7 +1,9 @@
 const { request, response } = require('express');
 const FoodInfo = require('../models/FoodInfo');
-const app_id = 'cae8d934';
-const app_key = 'c976bc0181f55b17746ee0f242d811d2';
+
+require('dotenv').config({ path: '.env.dev' });
+const app_id = process.env.api_id;
+const app_key = process.env.api_key;
 
 async function getFoodInfo_api(food) {
     try {
@@ -16,6 +18,7 @@ async function getFoodInfo_api(food) {
 }
 
 const get_post_food_info = async (request, response) => {
+
     const food_name = request.query.food;
 
     try {
