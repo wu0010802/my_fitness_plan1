@@ -5,6 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <link rel="stylesheet" href="/css/profile.css">
+    <style>
+        /* 模態視窗的基本樣式 */
+        .modal {
+            display: none; /* 隱藏 */
+            position: fixed; /* 固定位置 */
+            z-index: 1; /* 順序高於所有其他內容 */
+            top: 15%;
+            right: 10%; /* 調整視窗位置 */
+            width: 300px; /* 視窗寬度 */
+            background-color: #fff; /* 視窗背景色 */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* 加陰影 */
+            border-radius: 8px; /* 圓角 */
+            overflow: hidden;
+        }
+
+        /* 模態視窗的內容 */
+        .modal-content {
+            padding: 20px;
+        }
+
+        /* 關閉按鈕 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+
+        /* 確認按鈕樣式 */
+        #confirmBtn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #confirmBtn:hover {
+            background-color: #0056b3;
+        }
+
+        /* 食物預覽信息的樣式 */
+        #foodPreview {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        #foodPreview p {
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
     <div class="profile-container">
@@ -19,12 +83,17 @@
             <label for="food_name">Choose a food:</label>
             <input type="text" id="foodName" name="food_name" placeholder="Enter Food Name" required>
             <input type="number" id="amount" name="amount" min="0" placeholder="Enter Amount (grams)" required>
-            <button type="submit">Add Food Intake</button>
-            <button type="button" id="previewBtn">Preview Nutrition Info</button>
+            <button type="button" id="addFoodBtn">Add Food Intake</button>
         </form>
 
-        <!-- 顯示預覽結果的區域 -->
-        <div id="foodPreview"></div>
+        <!-- 顯示模態視窗 -->
+        <div id="foodModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="foodPreview"></div>
+                <button id="confirmBtn">Confirm</button>
+            </div>
+        </div>
 
         <!-- 新增按鈕來查詢今天的食物攝取日誌 -->
         <h2>Check Today's Intake Logs</h2>
@@ -33,7 +102,7 @@
         <p><a href="/logout">Logout</a></p>
     </div>
     <script>
-        document.getElementById('previewBtn').addEventListener('click', async function() {
+        document.getElementById('addFoodBtn').addEventListener('click', async function() {
             const foodName = document.getElementById('foodName').value;
 
             if (!foodName) {
@@ -53,13 +122,31 @@
                         <p>Fat: ${foodData.fat} g</p>
                         <p>Carbohydrate: ${foodData.carbohydrate} g</p>
                     `;
+                    // 顯示模態視窗
+                    document.getElementById('foodModal').style.display = 'block';
                 } else {
-                    document.getElementById('foodPreview').innerHTML = `<p>Error: ${foodData.error}</p>`;
+                    alert('Error: ' + foodData.error);
                 }
             } catch (error) {
                 console.error('Error fetching food info:', error);
-                document.getElementById('foodPreview').innerHTML = `<p>Failed to fetch food info.</p>`;
+                alert('Failed to fetch food info.');
             }
+        });
+
+        // 當使用者點擊關閉按鈕或空白區域時，關閉模態視窗
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('foodModal').style.display = 'none';
+        });
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('foodModal')) {
+                document.getElementById('foodModal').style.display = 'none';
+            }
+        }
+
+        // 當使用者確認後提交表單
+        document.getElementById('confirmBtn').addEventListener('click', function() {
+            document.getElementById('foodForm').submit();
         });
 
         document.getElementById('logBtn').addEventListener('click', function() {

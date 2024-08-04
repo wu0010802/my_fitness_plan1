@@ -11,7 +11,9 @@ FoodInfo.belongsToMany(UserInfo, { through: IntakeLogs, foreignKey: 'food_id' })
 IntakeLogs.belongsTo(UserInfo, { foreignKey: 'user_id' });
 IntakeLogs.belongsTo(FoodInfo, { foreignKey: 'food_id' });
 
-const format_totalCalories_helper = async (user_id, date) => {
+
+
+const intakelogs_helper = async (user_id, date) => {
     try {
         const intakeLogs = await IntakeLogs.findAll({
             where: {
@@ -30,49 +32,76 @@ const format_totalCalories_helper = async (user_id, date) => {
                 }
             ]
         });
-        const formattedLogs = intakeLogs.map(log => ({
-            amount: log.amount,
-            date: new Date(log.date).toLocaleDateString(), // 日期格式化
-            FoodInfo: {
-                food_name: log.FoodInfo.food_name,
-                calories: log.FoodInfo.calories,
-                protein: log.FoodInfo.protein,
-                fat: log.FoodInfo.fat,
-                carbohydrate: log.FoodInfo.carbohydrate
-            },
-            UserInfo: {
-                username: log.UserInfo.username
-            }
-
-        }));
-        const totalCalories = intakeLogs.reduce((total, log) => {
-  
-            return total + (log.amount / 100 * log.FoodInfo.calories);//精度處理
-        }, 0);
-  
-  
-        return { formattedLogs, totalCalories }
-
-
-
-
+        return intakeLogs
     } catch (error) {
         console.error('Error fetching intake logs:', error);
         throw new Error('Failed to fetch intake logs');
     }
-};
+
+}
+
+
+
+
+const formatedlog = async (user_id,date) =>{
+
+
+    const intakeLogs = await intakelogs_helper(user_id,date)
+    const formattedLogs = intakeLogs.map(log => ({
+        amount: log.amount,
+        date: new Date(log.date).toLocaleDateString(),
+        FoodInfo: {
+            food_name: log.FoodInfo.food_name,
+            calories: log.FoodInfo.calories,
+            protein: log.FoodInfo.protein,
+            fat: log.FoodInfo.fat,
+            carbohydrate: log.FoodInfo.carbohydrate
+        },
+        UserInfo: {
+            username: log.UserInfo.username
+        }
+
+
+
+
+    }));
+    return formattedLogs.reverse()
+
+
+}
+
+
+
+
+const totalCalories_helper = async (user_id, date) => {
+
+
+    const intakeLogs = await intakelogs_helper(user_id,date)
+
+
+    const totalCalories = intakeLogs.reduce((total, log) => {
+
+        return total + (log.amount / 100 * log.FoodInfo.calories);
+    }, 0);
+
+
+    return totalCalories 
+
+
+}
+
 
 
 
 
 
 const get_user_intakelogs = async (request, response) => {
-    const user_id = request.user.user_id; 
+    const user_id = request.user.user_id;
     const date = new Date();
     try {
-        const { formattedLogs } = await format_totalCalories_helper(user_id, date);
-        
-        response.render('intakelogs', { logs: formattedLogs });
+        const reverse_formattedLogs = await formatedlog(user_id, date);
+
+        response.render('intakelogs', { logs: reverse_formattedLogs });
     } catch (error) {
         console.error('Error fetching intake logs:', error);
         response.status(500).json({ error: 'Failed to fetch intake logs' });
@@ -87,9 +116,9 @@ const total_calories = async (request, response) => {
 
 
     try {
-        const { totalCalories } = await format_totalCalories_helper(user_id, formattedDate);
+        const total_calories = await totalCalories_helper(user_id, formattedDate);
 
-        return totalCalories
+        return total_calories
     } catch (error) {
         console.error('Error fetching total calories:', error);
         response.status(500).json({ error: 'Failed to fetch total calories' });
@@ -99,19 +128,19 @@ const total_calories = async (request, response) => {
 
 
 const post_user_intakelogs = async (request, response) => {
-    const user_id = request.user.user_id; 
+    const user_id = request.user.user_id;
     const date = new Date();
     const { food_name, amount } = request.body;
 
     try {
-        
+
         const food = await FoodInfo.findOne({ where: { food_name: food_name } });
 
         if (!food) {
             return response.status(404).json({ error: 'Food not found' });
         }
 
-        
+
         const new_intake = await IntakeLogs.create({
             user_id: user_id,
             date: date,

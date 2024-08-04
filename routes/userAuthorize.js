@@ -143,7 +143,7 @@ router.get('/profile', async (req, res) => {
 
 
       const calories = await total_calories(req,res);
-      console.log('second calories:',calories)
+      const fixed_calories =  calories.toFixed(2)
       const user_record = user_records[0] ? user_records[0].dataValues : null;
 
       if (user_record) {
@@ -153,7 +153,7 @@ router.get('/profile', async (req, res) => {
             height: user_record.height,
             weight: user_record.weight,
             record_date: user_record.date,
-            calories: calories    
+            calories: fixed_calories    
           }
         })
       } else {
