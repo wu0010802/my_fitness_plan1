@@ -136,7 +136,6 @@ const delete_user_intakelog = async (request, response) => {
 
 }
 
-
 const update_user_intakelog = async (request, response) => {
     const log_id = request.params.log_id;
     const { amount } = request.body
@@ -158,9 +157,6 @@ const update_user_intakelog = async (request, response) => {
 
 
 }
-
-
-
 
 
 

@@ -93,7 +93,7 @@
             button.addEventListener('click', async function() {
                 const logId = this.getAttribute('data-log-id');
                 try {
-                    const response = await fetch(`/user/records/${logId}`, {
+                    const response = await fetch(`/user/intake/${logId}`, {
                         method: 'DELETE',
                     });
                     if (response.ok) {
@@ -124,7 +124,7 @@
                 const logId = this.getAttribute('data-log-id');
                 const amount = this.querySelector('input[name="amount"]').value;
                 try {
-                    const response = await fetch(`/user/records/${logId}`, {
+                    const response = await fetch(`/user/intake/${logId}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
