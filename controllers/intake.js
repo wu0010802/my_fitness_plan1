@@ -11,7 +11,7 @@ FoodInfo.belongsToMany(UserInfo, { through: IntakeLogs, foreignKey: 'food_id' })
 IntakeLogs.belongsTo(UserInfo, { foreignKey: 'user_id' });
 IntakeLogs.belongsTo(FoodInfo, { foreignKey: 'food_id' });
 
-const calories_transform = (nutrition, amount) => {
+const unit_transform = (nutrition, amount) => {
     return (nutrition * amount / 100).toFixed(2);
 }
 
@@ -49,10 +49,10 @@ const formatedlog = async (user_id, date) => {
         date: new Date(log.date).toLocaleDateString(),
         FoodInfo: {
             food_name: log.FoodInfo.food_name,
-            calories: calories_transform(log.FoodInfo.calories, log.amount),
-            protein: calories_transform(log.FoodInfo.protein, log.amount),
-            fat: calories_transform(log.FoodInfo.fat, log.amount),
-            carbohydrate: calories_transform(log.FoodInfo.carbohydrate, log.amount)
+            calories: unit_transform(log.FoodInfo.calories, log.amount),
+            protein: unit_transform(log.FoodInfo.protein, log.amount),
+            fat: unit_transform(log.FoodInfo.fat, log.amount),
+            carbohydrate: unit_transform(log.FoodInfo.carbohydrate, log.amount)
         },
         UserInfo: {
             username: log.UserInfo.username

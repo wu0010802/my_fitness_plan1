@@ -159,14 +159,14 @@
     <script>
         document.getElementById('addFoodBtn').addEventListener('click', async function() {
             const foodName = document.getElementById('foodName').value;
-
+            const amount = document.getElementById('amount').value;
             if (!foodName) {
                 alert('Please enter a food name.');
                 return;
             }
 
             try {
-                const response = await fetch(`/api/food?food=${foodName}`);
+                const response = await fetch(`/api/food?food=${foodName}&amount=${amount}`);
                 const foodData = await response.json();
 
                 if (response.ok) {
