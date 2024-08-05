@@ -11,7 +11,9 @@ FoodInfo.belongsToMany(UserInfo, { through: IntakeLogs, foreignKey: 'food_id' })
 IntakeLogs.belongsTo(UserInfo, { foreignKey: 'user_id' });
 IntakeLogs.belongsTo(FoodInfo, { foreignKey: 'food_id' });
 
-
+const calories_transform = (nutrition, amount) => {
+    return (nutrition * amount / 100).toFixed(2);
+}
 
 const intakelogs_helper = async (user_id, date) => {
     try {
@@ -40,59 +42,33 @@ const intakelogs_helper = async (user_id, date) => {
 
 }
 
-
-
-
-const formatedlog = async (user_id,date) =>{
-
-
-    const intakeLogs = await intakelogs_helper(user_id,date)
+const formatedlog = async (user_id, date) => {
+    const intakeLogs = await intakelogs_helper(user_id, date)
     const formattedLogs = intakeLogs.map(log => ({
         amount: log.amount,
         date: new Date(log.date).toLocaleDateString(),
         FoodInfo: {
             food_name: log.FoodInfo.food_name,
-            calories: log.FoodInfo.calories,
-            protein: log.FoodInfo.protein,
-            fat: log.FoodInfo.fat,
-            carbohydrate: log.FoodInfo.carbohydrate
+            calories: calories_transform(log.FoodInfo.calories, log.amount),
+            protein: calories_transform(log.FoodInfo.protein, log.amount),
+            fat: calories_transform(log.FoodInfo.fat, log.amount),
+            carbohydrate: calories_transform(log.FoodInfo.carbohydrate, log.amount)
         },
         UserInfo: {
             username: log.UserInfo.username
-        }
-
-
-
-
+        },
+        log_id: log.log_id
     }));
     return formattedLogs.reverse()
-
-
 }
-
-
-
 
 const totalCalories_helper = async (user_id, date) => {
-
-
-    const intakeLogs = await intakelogs_helper(user_id,date)
-
-
+    const intakeLogs = await intakelogs_helper(user_id, date)
     const totalCalories = intakeLogs.reduce((total, log) => {
-
         return total + (log.amount / 100 * log.FoodInfo.calories);
     }, 0);
-
-
-    return totalCalories 
-
-
+    return totalCalories
 }
-
-
-
-
 
 
 const get_user_intakelogs = async (request, response) => {
@@ -100,7 +76,6 @@ const get_user_intakelogs = async (request, response) => {
     const date = new Date();
     try {
         const reverse_formattedLogs = await formatedlog(user_id, date);
-
         response.render('intakelogs', { logs: reverse_formattedLogs });
     } catch (error) {
         console.error('Error fetching intake logs:', error);
@@ -112,12 +87,8 @@ const total_calories = async (request, response) => {
     const user_id = request.user.user_id;
     const now = new Date();
     const formattedDate = now.toISOString().split('T')[0];
-
-
-
     try {
         const total_calories = await totalCalories_helper(user_id, formattedDate);
-
         return total_calories
     } catch (error) {
         console.error('Error fetching total calories:', error);
@@ -125,17 +96,12 @@ const total_calories = async (request, response) => {
     }
 }
 
-
-
 const post_user_intakelogs = async (request, response) => {
     const user_id = request.user.user_id;
     const date = new Date();
     const { food_name, amount } = request.body;
-
     try {
-
         const food = await FoodInfo.findOne({ where: { food_name: food_name } });
-
         if (!food) {
             return response.status(404).json({ error: 'Food not found' });
         }
@@ -148,7 +114,7 @@ const post_user_intakelogs = async (request, response) => {
             food_id: food.food_id
         });
 
-        response.status(201).json({ message: "Create new intake success", new_intake });
+        response.redirect('/profile');
     } catch (error) {
         console.error('Error creating new intake log:', error);
         response.status(500).json({ error: 'Failed to create new intake log' });
@@ -156,11 +122,53 @@ const post_user_intakelogs = async (request, response) => {
 }
 
 
+const delete_user_intakelog = async (request, response) => {
+    const logId = request.params.log_id;
+    try {
+
+        await IntakeLogs.destroy({ where: { log_id: logId } });
+        response.status(200).json({ message: 'Record deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting record:', error);
+        response.status(500).json({ error: 'Failed to delete record' });
+    }
+
+
+}
+
+
+const update_user_intakelog = async (request, response) => {
+    const log_id = request.params.log_id;
+    const { amount } = request.body
+    try {
+        const log = await IntakeLogs.findOne({
+            where: {
+                log_id: log_id
+            }
+        });
+        const updated_log = await log.update({
+            amount: amount
+        })
+        await updated_log.save()
+        response.status(200).json({ message: 'Record update successfully' });
+    } catch (error) {
+        console.error('Error update record:', error);
+        response.status(500).json({ error: 'Failed to update record' });
+    }
+
+
+}
+
+
+
+
 
 
 module.exports = {
     get_user_intakelogs,
     post_user_intakelogs,
-    total_calories
+    total_calories,
+    delete_user_intakelog,
+    update_user_intakelog
 }
 

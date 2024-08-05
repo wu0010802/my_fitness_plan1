@@ -14,9 +14,9 @@ const { total_calories } = require('../controllers/intake')
 
 app.use(helmet());
 
-const  ensureAuthenticated = (req, res, next) =>{
+const ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
-      return next();
+    return next();
   }
   res.redirect('/login');
 };
@@ -142,9 +142,10 @@ router.get('/profile', async (req, res) => {
       });
 
 
-      const calories = await total_calories(req,res);
-      const fixed_calories =  calories.toFixed(2)
+      const today_calories = await total_calories(req, res);
+      const fixed_calories = today_calories.toFixed(2)
       const user_record = user_records[0] ? user_records[0].dataValues : null;
+      const Calories_remaining = (user_record.tdee - today_calories).toFixed(2)
 
       if (user_record) {
         res.render('profile', {
@@ -153,7 +154,8 @@ router.get('/profile', async (req, res) => {
             height: user_record.height,
             weight: user_record.weight,
             record_date: user_record.date,
-            calories: fixed_calories    
+            Calories_remaining: Calories_remaining,
+            calories: fixed_calories
           }
         })
       } else {

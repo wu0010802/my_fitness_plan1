@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/intakelogs.css">
-    <title>IntakeLogs</title>
+    <title>User Records</title>
+    <link rel="stylesheet" href="/css/userRecords.css">
     <style>
         .action-buttons {
             margin-top: 10px;
@@ -56,44 +55,55 @@
         }
     </style>
 </head>
-
 <body>
-    
-    <ul>
-        {{#each logs}}
-        <li>
-            <strong>Food:</strong> {{this.FoodInfo.food_name}}<br>
-            <strong>Amount:</strong> {{this.amount}} grams<br>
-            <strong>Date:</strong> {{this.date}}<br>
-            <strong>Calories:</strong> {{this.FoodInfo.calories}} kcal<br>
-            <strong>Protein:</strong> {{this.FoodInfo.protein}} g<br>
-            <strong>Fat:</strong> {{this.FoodInfo.fat}} g<br>
-            <strong>Carbohydrate:</strong> {{this.FoodInfo.carbohydrate}} g<br>
+    <div class="container">
+        <h1>User Records</h1>
+        <div class="records">
+            {{#each userRecords}}
+            <div class="record-card">            
+                <p><strong>Height:</strong> {{this.height}} cm</p>
+                <p><strong>Weight:</strong> {{this.weight}} kg</p>
+                <p><strong>Age:</strong> {{this.age}}</p>
+                <p><strong>Gender:</strong> {{this.gender}}</p>
+                <p><strong>Exercise per Week:</strong> {{this.exercise_per_week}} times</p>
+                <p><strong>Protein:</strong> {{this.protein}}</p>
+                <p><strong>Fat:</strong> {{this.fat}}</p>
+                 <p><strong>Carbohydrates:</strong> {{this.carbohydrates}}</p>
+                <p><strong>Bmi:</strong> {{this.bmi}}</p>
+                <p><strong>Tdee:</strong> {{this.tdee}}</p>
+                <p><strong>Date:</strong> {{this.date}}</p>
 
-            <!-- 添加刪除和修改按鈕，並傳遞 log_id -->
-            <div class="action-buttons">
-                <button class="edit-btn" data-log-id="{{this.log_id}}">Edit</button>
-                <button class="delete-btn" data-log-id="{{this.log_id}}">Delete</button>
+                <!-- 添加刪除和修改按鈕 -->
+                <div class="action-buttons">
+                    <button class="edit-btn" data-info-id="{{this.info_id}}">Edit</button>
+                    <button class="delete-btn" data-info-id="{{this.info_id}}">Delete</button>
+                </div>
+
+                <!-- 修改表單 -->
+                <form class="edit-form" data-info-id="{{this.info_id}}">
+                    <input type="text" name="height" placeholder="Enter new height" value="{{this.height}}">
+                    <input type="text" name="weight" placeholder="Enter new weight" value="{{this.weight}}">
+                    <input type="text" name="age" placeholder="Enter new age" value="{{this.age}}">
+                    <input type="text" name="gender" placeholder="Enter new gender" value="{{this.gender}}">
+                    <input type="number" name="exercise_per_week" placeholder="Enter new exercise per week" value="{{this.exercise_per_week}}">
+                    <!-- 可以根据需要添加更多字段 -->
+                    <button type="submit">Update</button>
+                </form>
             </div>
-
-            <!-- 修改表單 -->
-            <form class="edit-form" data-log-id="{{this.log_id}}">
-                <input type="number" name="amount" placeholder="Enter new amount" value="{{this.amount}}">
-                <button type="submit">Update</button>
-            </form>
-        </li>
-        {{/each}}
-    </ul>
-
-    <a href="/profile">Back to Profile</a>
+            {{else}}
+            <p>No records found.</p>
+            {{/each}}
+        </div>
+        <a href="/profile" class="back-btn">Back to Profile</a>
+    </div>
 
     <script>
         // 刪除按鈕事件處理
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', async function() {
-                const logId = this.getAttribute('data-log-id');
+                const infoId = this.getAttribute('data-info-id');
                 try {
-                    const response = await fetch(`/user/records/${logId}`, {
+                    const response = await fetch(`/user/records/${infoId}`, {
                         method: 'DELETE',
                     });
                     if (response.ok) {
@@ -111,8 +121,8 @@
         // 顯示修改表單
         document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', function() {
-                const logId = this.getAttribute('data-log-id');
-                const form = document.querySelector(`.edit-form[data-log-id="${logId}"]`);
+                const infoId = this.getAttribute('data-info-id');
+                const form = document.querySelector(`.edit-form[data-info-id="${infoId}"]`);
                 form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
             });
         });
@@ -121,15 +131,16 @@
         document.querySelectorAll('.edit-form').forEach(form => {
             form.addEventListener('submit', async function(event) {
                 event.preventDefault();
-                const logId = this.getAttribute('data-log-id');
-                const amount = this.querySelector('input[name="amount"]').value;
+                const infoId = this.getAttribute('data-info-id');
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
                 try {
-                    const response = await fetch(`/user/records/${logId}`, {
+                    const response = await fetch(`/user/records/${infoId}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ amount: amount }),
+                        body: JSON.stringify(data),
                     });
                     if (response.ok) {
                         location.reload(); // 更新成功後重新加載頁面
@@ -144,5 +155,4 @@
         });
     </script>
 </body>
-
 </html>

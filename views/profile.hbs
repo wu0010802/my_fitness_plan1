@@ -6,26 +6,23 @@
     <title>Profile</title>
     <link rel="stylesheet" href="/css/profile.css">
     <style>
-        /* 模態視窗的基本樣式 */
         .modal {
-            display: none; /* 隱藏 */
-            position: fixed; /* 固定位置 */
-            z-index: 1; /* 順序高於所有其他內容 */
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
             top: 15%;
-            right: 10%; /* 調整視窗位置 */
-            width: 300px; /* 視窗寬度 */
-            background-color: #fff; /* 視窗背景色 */
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* 加陰影 */
-            border-radius: 8px; /* 圓角 */
+            right: 10%; 
+            width: 300px; 
+            background-color: #fff; 
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); 
+            border-radius: 8px; 
             overflow: hidden;
         }
 
-        /* 模態視窗的內容 */
         .modal-content {
             padding: 20px;
         }
 
-        /* 關閉按鈕 */
         .close {
             color: #aaa;
             float: right;
@@ -39,8 +36,7 @@
             color: #000;
         }
 
-        /* 確認按鈕樣式 */
-        #confirmBtn {
+        #confirmBtn, #postUserRecordBtn {
             display: block;
             width: 100%;
             padding: 10px;
@@ -53,12 +49,11 @@
             margin-top: 20px;
         }
 
-        #confirmBtn:hover {
+        #confirmBtn:hover, #postUserRecordBtn:hover {
             background-color: #0056b3;
         }
 
-        /* 食物預覽信息的樣式 */
-        #foodPreview {
+        #foodPreview, #userFormModal {
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
@@ -68,6 +63,27 @@
         #foodPreview p {
             margin: 5px 0;
         }
+
+        #userRecords {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        /* 清除不必要的输入框样式 */
+        input[type="text"],
+        input[type="number"],
+        select {
+            display: block;
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -76,9 +92,10 @@
         <p>Height: {{ user.height }} cm</p>
         <p>Weight: {{ user.weight }} kg</p>
         <p>Record Date: {{ user.record_date }}</p>
-        <p>Calories: {{ user.calories }} kcal</p>
+        <p>Today intake Calories: {{ user.calories }} kcal</p>
+        <p>Today Calories remaining: {{ user.Calories_remaining }} kcal</p>
 
-        <!-- 新增吃的食物 -->
+        <!-- Add Food Intake Form -->
         <form id="foodForm" action="/user/intake" method="POST">
             <label for="food_name">Choose a food:</label>
             <input type="text" id="foodName" name="food_name" placeholder="Enter Food Name" required>
@@ -86,7 +103,7 @@
             <button type="button" id="addFoodBtn">Add Food Intake</button>
         </form>
 
-        <!-- 顯示模態視窗 -->
+        <!-- Food Modal -->
         <div id="foodModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -95,12 +112,50 @@
             </div>
         </div>
 
-        <!-- 新增按鈕來查詢今天的食物攝取日誌 -->
+        <!-- User Records -->
         <h2>Check Today's Intake Logs</h2>
         <button type="button" id="logBtn">Get Intake Logs</button>
 
+        <h2>Get User Records</h2>
+        <button type="button" id="getUserRecordsBtn">Get User Records</button>
+
+        <div id="userRecords"></div>
+
+        <!-- Post New User Record -->
+        <h2>Post New User Record</h2>
+        <button type="button" id="postUserRecord">Post New User Record</button>
+
+        <!-- User Record Modal -->
+        <div id="userRecordModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form id="userRecordForm">
+                    <label for="height">Height (cm):</label>
+                    <input type="number" id="height" name="height" required><br>
+
+                    <label for="weight">Weight (kg):</label>
+                    <input type="number" id="weight" name="weight" required><br>
+
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" required><br>
+
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" required>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select><br>
+
+                    <label for="exercise_per_week">Exercise per Week:</label>
+                    <input type="number" id="exercise_per_week" name="exercise_per_week" required><br>
+
+                    <button type="submit" id="postUserRecordBtn">Submit</button>
+                </form>
+            </div>
+        </div>
+
         <p><a href="/logout">Logout</a></p>
     </div>
+
     <script>
         document.getElementById('addFoodBtn').addEventListener('click', async function() {
             const foodName = document.getElementById('foodName').value;
@@ -122,7 +177,6 @@
                         <p>Fat: ${foodData.fat} g</p>
                         <p>Carbohydrate: ${foodData.carbohydrate} g</p>
                     `;
-                    // 顯示模態視窗
                     document.getElementById('foodModal').style.display = 'block';
                 } else {
                     alert('Error: ' + foodData.error);
@@ -133,24 +187,65 @@
             }
         });
 
-        // 當使用者點擊關閉按鈕或空白區域時，關閉模態視窗
-        document.querySelector('.close').addEventListener('click', function() {
-            document.getElementById('foodModal').style.display = 'none';
+        document.querySelectorAll('.close').forEach(closeBtn => {
+            closeBtn.addEventListener('click', function() {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            });
         });
 
         window.onclick = function(event) {
-            if (event.target == document.getElementById('foodModal')) {
-                document.getElementById('foodModal').style.display = 'none';
+            if (event.target.classList.contains('modal')) {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
             }
         }
 
-        // 當使用者確認後提交表單
         document.getElementById('confirmBtn').addEventListener('click', function() {
             document.getElementById('foodForm').submit();
         });
 
         document.getElementById('logBtn').addEventListener('click', function() {
             window.location.href = '/user/intake';
+        });
+
+        document.getElementById('getUserRecordsBtn').addEventListener('click', function() {
+            window.location.href = '/user/records';
+        });
+
+        // 新增用户记录的按钮事件
+        document.getElementById('postUserRecord').addEventListener('click', function() {
+            document.getElementById('userRecordModal').style.display = 'block';
+        });
+
+        // 提交用户记录的表单处理
+        document.getElementById('userRecordForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/user/records', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('User record created successfully');
+                    location.reload(); // 成功后重新加载页面
+                } else {
+                    alert('Failed to create user record');
+                }
+            } catch (error) {
+                console.error('Error creating user record:', error);
+                alert('Error creating user record');
+            }
         });
     </script>
 </body>

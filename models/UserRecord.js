@@ -52,6 +52,10 @@ const UserRecord = sequelize.define('UserRecord', {
     type: DataTypes.NUMERIC(8, 2),
     allowNull: true,
   },
+  exercise_per_week: {
+    type: DataTypes.STRING(50),
+    allowNull: true,
+  },
 }, {
   timestamps: false,
   tableName: 'user_record',
