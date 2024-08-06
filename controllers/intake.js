@@ -11,7 +11,7 @@ FoodInfo.belongsToMany(UserInfo, { through: IntakeLogs, foreignKey: 'food_id' })
 IntakeLogs.belongsTo(UserInfo, { foreignKey: 'user_id' });
 IntakeLogs.belongsTo(FoodInfo, { foreignKey: 'food_id' });
 
-const calories_transform = (nutrition, amount) => {
+const unit_transform = (nutrition, amount) => {
     return (nutrition * amount / 100).toFixed(2);
 }
 
@@ -49,10 +49,10 @@ const formatedlog = async (user_id, date) => {
         date: new Date(log.date).toLocaleDateString(),
         FoodInfo: {
             food_name: log.FoodInfo.food_name,
-            calories: calories_transform(log.FoodInfo.calories, log.amount),
-            protein: calories_transform(log.FoodInfo.protein, log.amount),
-            fat: calories_transform(log.FoodInfo.fat, log.amount),
-            carbohydrate: calories_transform(log.FoodInfo.carbohydrate, log.amount)
+            calories: unit_transform(log.FoodInfo.calories, log.amount),
+            protein: unit_transform(log.FoodInfo.protein, log.amount),
+            fat: unit_transform(log.FoodInfo.fat, log.amount),
+            carbohydrate: unit_transform(log.FoodInfo.carbohydrate, log.amount)
         },
         UserInfo: {
             username: log.UserInfo.username
@@ -61,6 +61,27 @@ const formatedlog = async (user_id, date) => {
     }));
     return formattedLogs.reverse()
 }
+
+const sum_nutrition = (intakelogs) => {
+    const sum_logs = {
+        total_calories: intakelogs.reduce((total, log) => {
+            return total + Number(log.FoodInfo.calories);
+        }, 0),
+        total_protein:intakelogs.reduce((total, log) => {
+            return total + Number(log.FoodInfo.protein);
+        }, 0),
+        total_fat:intakelogs.reduce((total, log) => {
+            return total + Number(log.FoodInfo.fat);
+        }, 0),
+        total_carbohydrate: intakelogs.reduce((total, log) => {
+            return total + Number(log.FoodInfo.carbohydrate);
+        }, 0)
+    }
+    return sum_logs
+}
+
+
+
 
 const totalCalories_helper = async (user_id, date) => {
     const intakeLogs = await intakelogs_helper(user_id, date)
@@ -76,7 +97,8 @@ const get_user_intakelogs = async (request, response) => {
     const date = new Date();
     try {
         const reverse_formattedLogs = await formatedlog(user_id, date);
-        response.render('intakelogs', { logs: reverse_formattedLogs });
+        const sum_log = sum_nutrition(reverse_formattedLogs);
+        response.render('intakelogs', { logs: reverse_formattedLogs,sum_log: sum_log});
     } catch (error) {
         console.error('Error fetching intake logs:', error);
         response.status(500).json({ error: 'Failed to fetch intake logs' });
@@ -136,7 +158,6 @@ const delete_user_intakelog = async (request, response) => {
 
 }
 
-
 const update_user_intakelog = async (request, response) => {
     const log_id = request.params.log_id;
     const { amount } = request.body
@@ -161,9 +182,6 @@ const update_user_intakelog = async (request, response) => {
 
 
 
-
-
-
 module.exports = {
     get_user_intakelogs,
     post_user_intakelogs,
@@ -171,4 +189,7 @@ module.exports = {
     delete_user_intakelog,
     update_user_intakelog
 }
+
+
+
 

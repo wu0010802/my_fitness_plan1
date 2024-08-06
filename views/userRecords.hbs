@@ -53,11 +53,25 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+        }
     </style>
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>User Records</h1>
+
+        <!-- 體重變化圖表 -->
+        <div class="chart-container">
+            <canvas id="weightChart"></canvas>
+        </div>
+
         <div class="records">
             {{#each userRecords}}
             <div class="record-card">            
@@ -68,7 +82,7 @@
                 <p><strong>Exercise per Week:</strong> {{this.exercise_per_week}} times</p>
                 <p><strong>Protein:</strong> {{this.protein}}</p>
                 <p><strong>Fat:</strong> {{this.fat}}</p>
-                 <p><strong>Carbohydrates:</strong> {{this.carbohydrates}}</p>
+                <p><strong>Carbohydrates:</strong> {{this.carbohydrates}}</p>
                 <p><strong>Bmi:</strong> {{this.bmi}}</p>
                 <p><strong>Tdee:</strong> {{this.tdee}}</p>
                 <p><strong>Date:</strong> {{this.date}}</p>
@@ -153,6 +167,55 @@
                 }
             });
         });
+
+        // 準備圖表數據
+       const weightData = [
+        {{#each userRecords}}
+            {{this.weight}}{{#unless @last}},{{/unless}}
+        {{/each}}
+          ]; 
+
+        const labels = [
+        {{#each userRecords}}
+            "{{this.date}}"{{#unless @last}},{{/unless}}
+        {{/each}}
+         ];
+
+    // 使用 Chart.js 繪製體重變化圖表
+    const ctx = document.getElementById('weightChart').getContext('2d');
+    const weightChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Weight (kg)',
+                data: weightData,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date',
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Weight (kg)',
+                    }
+                }
+            }
+        }
+    });
     </script>
 </body>
 </html>

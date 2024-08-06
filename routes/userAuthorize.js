@@ -6,6 +6,9 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const helmet = require('helmet');
 
+const GoogleStrategy = require('passport-google-oauth20').Strategy
+
+
 const UserInfo = require('../models/UserInfo')
 const UserRecord = require('../models/UserRecord')
 const IntakeLogs = require('../models/IntakeLogs')
@@ -67,18 +70,21 @@ router.post('/register', async (req, res) => {
       return res.status(500).json({ message: 'Failed to hash password' });
     }
 
-    await UserInfo.create({
+    const new_user = await UserInfo.create({
       username: username,
       email: email,
       password: hashedPassword
     });
 
-    res.render('login')
+    res.render('addRecord', { user_id: new_user.user_id });
   } catch (error) {
     console.error('Error creating new user record:', error);
     res.status(500).json({ message: 'Failed to create new user record' });
   }
 });
+
+
+
 
 
 
@@ -130,6 +136,27 @@ router.post("/login",
   }
 );
 
+router.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+  router.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }), // Google OAuth 回調路由
+  async (req, res) => {
+    try {
+     
+      const user_record = await UserRecord.findAll({ where: { user_id: req.user.user_id } });
+      
+      
+      if (user_record.length > 0) {
+        res.redirect("/profile"); 
+      } else {
+        res.render('addRecord', { user_id: req.user.user_id }); 
+      }
+    } catch (error) {
+      console.error('Error fetching user record:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
 
 router.get('/profile', async (req, res) => {
   if (req.isAuthenticated()) {
@@ -156,8 +183,11 @@ router.get('/profile', async (req, res) => {
             record_date: user_record.date,
             Calories_remaining: Calories_remaining,
             calories: fixed_calories
+
           }
+
         })
+
       } else {
         res.render('profile', { user: req.user, message: 'No records found' });
       }

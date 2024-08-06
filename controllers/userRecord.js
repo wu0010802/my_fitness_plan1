@@ -110,7 +110,8 @@ async function createUser(request) {
   const target_protein = nutrition.target_protein();
   const target_fat = nutrition.target_fat();
   const target_carbohydrate = nutrition.target_carbohydrate();
-  const user_id = request.user.user_id;
+  const user_id = request.user?.user_id || request.params.user_id;
+
 
   try {
     return await UserRecord.create({
@@ -136,7 +137,7 @@ async function createUser(request) {
 const post_user_record = async (request, response) => {
   try {
     const record = await createUser(request)
-    return response.status(201).json(record);
+    return record
 
   } catch (error) {
     console.error('Error creating new user record:', error);
@@ -153,7 +154,7 @@ const update_user_record = async (request, response) => {
   const bmi = bmi_calculate(weight, height);
   const tdee = TDEE_calculate(exercise_per_week, bmr);
   
-  // const now = new Date().toISOString().split('T')[0];
+  
 
 
   const nutrition = new Nutrition(tdee);
@@ -223,7 +224,8 @@ module.exports = {
   get_user_records,
   post_user_record,
   update_user_record,
-  delete_user_record
+  delete_user_record,
+  createUser
 }
 
 
