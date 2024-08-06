@@ -6,6 +6,9 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const helmet = require('helmet');
 
+const GoogleStrategy = require('passport-google-oauth20').Strategy
+
+
 const UserInfo = require('../models/UserInfo')
 const UserRecord = require('../models/UserRecord')
 const IntakeLogs = require('../models/IntakeLogs')
@@ -73,7 +76,7 @@ router.post('/register', async (req, res) => {
       password: hashedPassword
     });
 
-    res.render('addRecord',{user_id:new_user.user_id});
+    res.render('addRecord', { user_id: new_user.user_id });
   } catch (error) {
     console.error('Error creating new user record:', error);
     res.status(500).json({ message: 'Failed to create new user record' });
@@ -82,6 +85,36 @@ router.post('/register', async (req, res) => {
 
 
 
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID:
+        '594286944806-h55i3un9fr0opi1j597u8lfrds9ev73j.apps.googleusercontent.com',
+      clientSecret: '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',
+      callbackURL: 'http://localhost:3000/auth/google/callback'
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+
+        let user = await UserInfo.findOne({ where: { email: profile.emails[0].value } });
+
+        if (user) {
+
+          return done(null, user);
+        } else {
+
+          user = await UserInfo.create({
+            username: profile.displayName,
+            email: profile.emails[0].value,
+            password: 'google',
+          });
+          return done(null, user);
+        }
+      } catch (err) {
+        return done(err, null);
+      }
+    }
+  ));
 
 
 
@@ -132,6 +165,27 @@ router.post("/login",
   }
 );
 
+router.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+  router.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }), // Google OAuth 回調路由
+  async (req, res) => {
+    try {
+     
+      const user_record = await UserRecord.findAll({ where: { user_id: req.user.user_id } });
+      
+      
+      if (user_record.length > 0) {
+        res.redirect("/profile"); 
+      } else {
+        res.render('addRecord', { user_id: req.user.user_id }); 
+      }
+    } catch (error) {
+      console.error('Error fetching user record:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
 
 router.get('/profile', async (req, res) => {
   if (req.isAuthenticated()) {
