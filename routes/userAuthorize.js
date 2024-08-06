@@ -67,18 +67,20 @@ router.post('/register', async (req, res) => {
       return res.status(500).json({ message: 'Failed to hash password' });
     }
 
-    await UserInfo.create({
+    const new_user = await UserInfo.create({
       username: username,
       email: email,
       password: hashedPassword
     });
 
-    res.render('login')
+    res.render('addRecord',{user_id:new_user.user_id});
   } catch (error) {
     console.error('Error creating new user record:', error);
     res.status(500).json({ message: 'Failed to create new user record' });
   }
 });
+
+
 
 
 
@@ -156,8 +158,11 @@ router.get('/profile', async (req, res) => {
             record_date: user_record.date,
             Calories_remaining: Calories_remaining,
             calories: fixed_calories
+
           }
+
         })
+
       } else {
         res.render('profile', { user: req.user, message: 'No records found' });
       }

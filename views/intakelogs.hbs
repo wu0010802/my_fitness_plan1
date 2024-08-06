@@ -54,11 +54,41 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        .summary {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+            color: #343a40;
+        }
+
+        .summary strong {
+            display: inline-block;
+            width: 150px;
+        }
     </style>
 </head>
 
 <body>
-    
+
+    <!-- 總結顯示區域 -->
+    <div class="summary">
+        <h2>SUMMARY</h2>
+        <strong>Calories:</strong> {{sum_log.total_calories}} kcal<br>
+        <strong>Protein:</strong> {{sum_log.total_protein}} g<br>
+        <strong>Fat:</strong> {{sum_log.total_fat}} g<br>
+        <strong>Carbohydrate:</strong> {{sum_log.total_carbohydrate}} g<br>
+    </div>
+
     <ul>
         {{#each logs}}
         <li>

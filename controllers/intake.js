@@ -62,6 +62,27 @@ const formatedlog = async (user_id, date) => {
     return formattedLogs.reverse()
 }
 
+const sum_nutrition = (intakelogs) => {
+    const sum_logs = {
+        total_calories: intakelogs.reduce((total, log) => {
+            return total + Number(log.FoodInfo.calories);
+        }, 0),
+        total_protein:intakelogs.reduce((total, log) => {
+            return total + Number(log.FoodInfo.protein);
+        }, 0),
+        total_fat:intakelogs.reduce((total, log) => {
+            return total + Number(log.FoodInfo.fat);
+        }, 0),
+        total_carbohydrate: intakelogs.reduce((total, log) => {
+            return total + Number(log.FoodInfo.carbohydrate);
+        }, 0)
+    }
+    return sum_logs
+}
+
+
+
+
 const totalCalories_helper = async (user_id, date) => {
     const intakeLogs = await intakelogs_helper(user_id, date)
     const totalCalories = intakeLogs.reduce((total, log) => {
@@ -76,7 +97,8 @@ const get_user_intakelogs = async (request, response) => {
     const date = new Date();
     try {
         const reverse_formattedLogs = await formatedlog(user_id, date);
-        response.render('intakelogs', { logs: reverse_formattedLogs });
+        const sum_log = sum_nutrition(reverse_formattedLogs);
+        response.render('intakelogs', { logs: reverse_formattedLogs,sum_log: sum_log});
     } catch (error) {
         console.error('Error fetching intake logs:', error);
         response.status(500).json({ error: 'Failed to fetch intake logs' });
@@ -167,4 +189,7 @@ module.exports = {
     delete_user_intakelog,
     update_user_intakelog
 }
+
+
+
 

@@ -22,9 +22,13 @@ body {
 
 h1 {
     color: #444;
-    font-size: 24px;
+    font-size: 28px;
     margin-bottom: 20px;
+    text-align: center;
+    visibility: visible; /* 确保元素是可见的 */
+    z-index: 10; /* 如果有覆盖元素，确保标题在上层 */
 }
+
 
 p {
     color: #555;
