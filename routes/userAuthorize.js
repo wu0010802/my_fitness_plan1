@@ -85,36 +85,36 @@ router.post('/register', async (req, res) => {
 
 
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID:
-        '594286944806-h55i3un9fr0opi1j597u8lfrds9ev73j.apps.googleusercontent.com',
-      clientSecret: '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',
-      callbackURL: 'http://localhost:3000/auth/google/callback'
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
+// passport.use(
+//   new GoogleStrategy(
+//     {
+//       clientID:
+//         '594286944806-h55i3un9fr0opi1j597u8lfrds9ev73j.apps.googleusercontent.com',
+//       clientSecret: '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',
+//       callbackURL: 'http://localhost:3000/auth/google/callback'
+//     },
+//     async (accessToken, refreshToken, profile, done) => {
+//       try {
 
-        let user = await UserInfo.findOne({ where: { email: profile.emails[0].value } });
+//         let user = await UserInfo.findOne({ where: { email: profile.emails[0].value } });
 
-        if (user) {
+//         if (user) {
 
-          return done(null, user);
-        } else {
+//           return done(null, user);
+//         } else {
 
-          user = await UserInfo.create({
-            username: profile.displayName,
-            email: profile.emails[0].value,
-            password: 'google',
-          });
-          return done(null, user);
-        }
-      } catch (err) {
-        return done(err, null);
-      }
-    }
-  ));
+//           user = await UserInfo.create({
+//             username: profile.displayName,
+//             email: profile.emails[0].value,
+//             password: 'google',
+//           });
+//           return done(null, user);
+//         }
+//       } catch (err) {
+//         return done(err, null);
+//       }
+//     }
+//   ));
 
 
 
