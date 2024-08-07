@@ -32,7 +32,8 @@
         }
 
         input[type="text"],
-        input[type="number"] {
+        input[type="number"],
+        select {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -59,7 +60,6 @@
 </head>
 
 <body>
-    <!-- 表單的 action 屬性將被動態設置 -->
     <form id="userRecordForm" method="POST">
         <h1>Add Your Record</h1>
         <label for="height">Height (cm)</label>
@@ -72,19 +72,20 @@
         <input type="number" id="age" name="age" required>
 
         <label for="gender">Gender</label>
-        <input type="text" id="gender" name="gender" required>
+        <select id="gender" name="gender" required>
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
 
         <label for="exercise_per_week">Exercise Per Week (hours)</label>
-        <input type="number" id="exercise_per_week" name="exercise_per_week" required>
+        <input type="number" id="exercise_per_week" name="exercise_per_week" min="0" max="7" required>
 
         <button type="submit">Submit</button>
     </form>
 
     <script>
-        // 假設 user_id 是從後端傳遞到前端的變數
         const user_id = "{{ user_id }}"; // 這裡的 "{{ user_id }}" 應該由後端渲染
-
-        // 動態設置表單的 action
         const form = document.getElementById('userRecordForm');
         form.action = `/register/records/${user_id}`;
     </script>

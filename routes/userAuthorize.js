@@ -4,7 +4,8 @@ const router = express.Router()
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require('bcryptjs');
-const helmet = require('helmet');
+
+require('dotenv').config({ path: '.env.dev' });
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 
@@ -15,7 +16,6 @@ const UserRecord = require('../models/UserRecord')
 
 const { total_calories } = require('../controllers/intake')
 
-app.use(helmet());
 
 const ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -87,9 +87,9 @@ passport.use(
   new GoogleStrategy(
     {
       clientID:
-        '594286944806-h55i3un9fr0opi1j597u8lfrds9ev73j.apps.googleusercontent.com',
-      clientSecret: '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',
-      callbackURL: 'http://localhost:3000/auth/google/callback'
+        process.env.clientID,
+      clientSecret:  process.env.clientSecret,
+      callbackURL: process.env.callbackURL
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -168,18 +168,18 @@ router.post("/login",
 router.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-  router.get('/auth/google/callback',
+router.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }), // Google OAuth 回調路由
   async (req, res) => {
     try {
-     
+
       const user_record = await UserRecord.findAll({ where: { user_id: req.user.user_id } });
-      
-      
+
+
       if (user_record.length > 0) {
-        res.redirect("/profile"); 
+        res.redirect("/profile");
       } else {
-        res.render('addRecord', { user_id: req.user.user_id }); 
+        res.render('addRecord', { user_id: req.user.user_id });
       }
     } catch (error) {
       console.error('Error fetching user record:', error);
