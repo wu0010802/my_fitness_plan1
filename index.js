@@ -1,33 +1,37 @@
-const express = require('express');
+// const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
+// const app = express();
 const sequelize = require('./database/sequelize')
 const cors = require('cors');
 const port = process.env.PORT || 3000
 const path = require('path');
 
-const RedisStore = require('connect-redis')(session);
+// const RedisStore = require('connect-redis')(session);
 const Redis = require('ioredis');
-const redisClient = new Redis();
+// const redisClient = new Redis();
 
 
 const passport = require("passport");
-const session = require("express-session");
+// const session = require("express-session");
 // const store = new session.MemoryStore();
 
 const exphbs = require('express-handlebars');
 
+const express = require('express');
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const redis = require('redis');
+const redisClient = redis.createClient();
 
+const app = express();
 
-app.use(
-  session({
-    secret: "fitness",
-    cookie: { maxAge: 300000000, secure: false },
-    saveUninitialized: false,
-    resave: false,
-    store: new RedisStore({ client: redisClient })
-  })
-)
+app.use(session({
+  store: new RedisStore({ client: redisClient }),
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: false
+}));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
