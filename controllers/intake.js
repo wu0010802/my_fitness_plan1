@@ -10,8 +10,8 @@ const FoodInfo = require('../models/FoodInfo');
 
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/sequelize');
-const UserInfo = require('./UserInfo');
-const FoodInfo = require('./FoodInfo');
+// const UserInfo = require('./UserInfo');
+// const FoodInfo = require('./FoodInfo');
 
 const IntakeLogs = sequelize.define('IntakeLogs', {
     log_id: {
