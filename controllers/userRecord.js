@@ -100,7 +100,7 @@ async function createUser(request) {
   const { height, weight, age, gender, exercise_per_week } = request.body;
   const bmr = BMR_calculate(gender, weight, height, age);
   const bmi = bmi_calculate(weight, height);
-  const now = new Date();
+  const now = new Date().toLocaleDateString();
   const tdee = TDEE_calculate(exercise_per_week, bmr);
   const nutrition = new Nutrition(tdee);
   const target_protein = nutrition.target_protein();
