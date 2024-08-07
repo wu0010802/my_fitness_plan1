@@ -11,7 +11,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy
 
 const UserInfo = require('../models/UserInfo')
 const UserRecord = require('../models/UserRecord')
-const IntakeLogs = require('../models/IntakeLogs')
+const IntakeLogs = require('../models/IntakeLogs');
 
 const { total_calories } = require('../controllers/intake')
 
