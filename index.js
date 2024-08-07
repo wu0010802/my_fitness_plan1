@@ -5,7 +5,7 @@ const cors = require('cors');
 const path = require('path');
 const passport = require("passport");
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis').default;
 const redis = require('redis');
 
 // 初始化 Redis Client
