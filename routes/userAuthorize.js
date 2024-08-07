@@ -1,14 +1,11 @@
 const express = require('express')
-const app = express();
 const router = express.Router()
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy
 const bcrypt = require('bcryptjs');
 
 require('dotenv').config({ path: '.env.dev' });
-
-const GoogleStrategy = require('passport-google-oauth20').Strategy
-
 
 const UserInfo = require('../models/UserInfo')
 const UserRecord = require('../models/UserRecord')
