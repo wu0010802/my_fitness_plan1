@@ -3,7 +3,7 @@ const app = express();
 const router = express.Router()
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 const helmet = require('helmet');
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy
