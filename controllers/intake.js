@@ -2,16 +2,12 @@ const { request, response } = require('express');
 
 const UserInfo = require('../models/UserInfo');
 
-console.log('Before requiring IntakeLogs');
-// const IntakeLogs = require('../models/IntakeLogs');
-console.log('After requiring IntakeLogs');
 const FoodInfo = require('../models/FoodInfo');
 
 
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/sequelize');
-// const UserInfo = require('./UserInfo');
-// const FoodInfo = require('./FoodInfo');
+
 
 const IntakeLogs = sequelize.define('IntakeLogs', {
     log_id: {

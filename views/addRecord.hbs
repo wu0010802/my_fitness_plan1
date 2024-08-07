@@ -85,7 +85,7 @@
     </form>
 
     <script>
-        const user_id = "{{ user_id }}"; // 這裡的 "{{ user_id }}" 應該由後端渲染
+        const user_id = "{{ user_id }}"; 
         const form = document.getElementById('userRecordForm');
         form.action = `/register/records/${user_id}`;
     </script>
