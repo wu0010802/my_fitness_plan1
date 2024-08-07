@@ -6,9 +6,14 @@ const cors = require('cors');
 const port = process.env.PORT || 3000
 const path = require('path');
 
+const RedisStore = require('connect-redis')(session);
+const Redis = require('ioredis');
+const redisClient = new Redis();
+
+
 const passport = require("passport");
 const session = require("express-session");
-const store = new session.MemoryStore();
+// const store = new session.MemoryStore();
 
 const exphbs = require('express-handlebars');
 
@@ -20,7 +25,7 @@ app.use(
     cookie: { maxAge: 300000000, secure: false },
     saveUninitialized: false,
     resave: false,
-    store: store
+    store: new RedisStore({ client: redisClient })
   })
 )
 

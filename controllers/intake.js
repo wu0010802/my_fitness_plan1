@@ -2,7 +2,6 @@ const { request, response } = require('express');
 
 const UserInfo = require('../models/UserInfo');
 const IntakeLogs = require('../models/IntakeLogs');
-
 const FoodInfo = require('../models/FoodInfo');
 
 
