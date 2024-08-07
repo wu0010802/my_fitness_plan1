@@ -1,7 +1,6 @@
 const { request, response } = require('express');
 
 const UserInfo = require('../models/UserInfo');
-
 const FoodInfo = require('../models/FoodInfo');
 
 
@@ -134,9 +133,10 @@ const totalCalories_helper = async (user_id, date) => {
 
 const get_user_intakelogs = async (request, response) => {
     const user_id = request.user.user_id;
-    const date = new Date();
+    const now = new Date().toLocaleDateString();
+    // const formattedDate = now.toISOString().split('T')[0];
     try {
-        const reverse_formattedLogs = await formatedlog(user_id, date);
+        const reverse_formattedLogs = await formatedlog(user_id, now);
         const sum_log = sum_nutrition(reverse_formattedLogs);
         response.render('intakelogs', { logs: reverse_formattedLogs, sum_log: sum_log });
     } catch (error) {
@@ -147,10 +147,10 @@ const get_user_intakelogs = async (request, response) => {
 
 const total_calories = async (request, response) => {
     const user_id = request.user.user_id;
-    const now = new Date();
-    const formattedDate = now.toISOString().split('T')[0];
+    const now = new Date().toLocaleDateString();
+    // const formattedDate = now.toISOString().split('T')[0];
     try {
-        const total_calories = await totalCalories_helper(user_id, formattedDate);
+        const total_calories = await totalCalories_helper(user_id, now);
         return total_calories
     } catch (error) {
         console.error('Error fetching total calories:', error);
