@@ -1,33 +1,28 @@
-// const express = require('express');
-const bodyParser = require('body-parser');
-// const app = express();
-const sequelize = require('./database/sequelize')
-const cors = require('cors');
-const port = process.env.PORT || 3000
-const path = require('path');
-
-// const RedisStore = require('connect-redis')(session);
-const Redis = require('ioredis');
-// const redisClient = new Redis();
-
-
-const passport = require("passport");
-// const session = require("express-session");
-// const store = new session.MemoryStore();
-
-const exphbs = require('express-handlebars');
-
 const express = require('express');
+const bodyParser = require('body-parser');
+const sequelize = require('./database/sequelize');
+const cors = require('cors');
+const path = require('path');
+const passport = require("passport");
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const redis = require('redis');
+
+// 初始化 Redis Client
 const redisClient = redis.createClient();
+
+redisClient.on('error', (err) => {
+  console.log('Redis Client Error', err);
+});
+
+redisClient.connect().catch(console.error);
 
 const app = express();
 
+// 使用 session 和 RedisStore
 app.use(session({
   store: new RedisStore({ client: redisClient }),
-  secret: 'your_secret_key',
+  secret: process.env.SESSION_SECRET || 'your_secret_key',
   resave: false,
   saveUninitialized: false
 }));
