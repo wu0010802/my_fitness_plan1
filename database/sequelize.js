@@ -4,15 +4,14 @@ const { Sequelize } = require('sequelize');
 const isProduction = process.env.NODE_ENV === 'production';
 
 const sequelize = isProduction
-  ? new Sequelize(process.env.DATABASE_URL, {
-      dialect: 'postgres',
-      protocol: 'postgres',
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false
-        }
-      }
+  ? new Sequelize(process.env.Database,
+    process.env.Username,
+    process.env.Password,
+    {
+      host: process.env.Hostname,
+      port: process.env.Port,
+      dialect: process.env.sqltype,
+      
     })
   : new Sequelize(
     process.env.local_postgresql_DATABASE,
