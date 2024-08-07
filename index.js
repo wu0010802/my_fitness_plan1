@@ -8,6 +8,7 @@ const session = require('express-session');
 const RedisStore = require('connect-redis').default;
 const redis = require('redis');
 const exphbs = require('express-handlebars');
+const port = process.env.PORT || 3000;  // 使用 Render 提供的 PORT 環境變數
 
 // 初始化 Redis Client
 const redisClient = redis.createClient();
