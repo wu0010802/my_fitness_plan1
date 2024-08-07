@@ -38,8 +38,6 @@ const IntakeLogs = sequelize.define('IntakeLogs', {
     timestamps: false
 });
 
-
-
 module.exports = IntakeLogs;
 
 

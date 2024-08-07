@@ -1,6 +1,6 @@
 const sequelize = require('../database/sequelize');
 const { DataTypes } = require('sequelize');
-const UserInfo = require('./UserInfo')
+
 
 const UserRecord = sequelize.define('UserRecord', {
   info_id: {
