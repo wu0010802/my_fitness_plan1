@@ -7,6 +7,7 @@ const passport = require("passport");
 const session = require('express-session');
 const RedisStore = require('connect-redis').default;
 const redis = require('redis');
+const exphbs = require('express-handlebars');
 
 // 初始化 Redis Client
 const redisClient = redis.createClient();
