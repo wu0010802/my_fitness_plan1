@@ -28,9 +28,9 @@ router.post('/user/records', ensureAuthenticated, async (req, res) => {
     try {
       const record = await UserController.post_user_record(req);
       
-      // 創建成功後重定向
+      
       if (!res.headersSent) {
-        res.redirect('/login');
+        res.redirect('/profile');
       }
     } catch (error) {
       console.error('Error during post_user_record execution:', error);

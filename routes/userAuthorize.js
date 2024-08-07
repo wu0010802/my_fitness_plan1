@@ -73,7 +73,15 @@ router.post('/register', async (req, res) => {
       password: hashedPassword
     });
 
-    res.render('addRecord', { user_id: new_user.user_id });
+
+
+    req.login(new_user, function (err) {
+      if (err) {
+        return next(err);
+      }
+
+      res.render('addRecord', { user_id: new_user.user_id });
+    });
   } catch (error) {
     console.error('Error creating new user record:', error);
     res.status(500).json({ message: 'Failed to create new user record' });
@@ -85,7 +93,7 @@ passport.use(
     {
       clientID:
         process.env.clientID,
-      clientSecret:  process.env.clientSecret,
+      clientSecret: process.env.clientSecret,
       callbackURL: process.env.callbackURL
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -166,23 +174,28 @@ router.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }), // Google OAuth 回調路由
-  async (req, res) => {
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  async (req, res, next) => {
     try {
-
       const user_record = await UserRecord.findAll({ where: { user_id: req.user.user_id } });
-
 
       if (user_record.length > 0) {
         res.redirect("/profile");
       } else {
-        res.render('addRecord', { user_id: req.user.user_id });
+
+        req.login(req.user, function (err) {
+          if (err) {
+            return next(err);
+          }
+          res.render('addRecord', { user_id: req.user.user_id });
+        });
       }
     } catch (error) {
       console.error('Error fetching user record:', error);
       res.status(500).send('Internal Server Error');
     }
   });
+
 
 router.get('/profile', async (req, res) => {
   if (req.isAuthenticated()) {
