@@ -85,7 +85,7 @@ const formatedlog = async (user_id, date) => {
     const intakeLogs = await intakelogs_helper(user_id, date)
     const formattedLogs = intakeLogs.map(log => ({
         amount: log.amount,
-        date: new Date(log.date).toLocaleDateString(),
+        date: new Date(log.date).toISOString().split('T')[0],
         FoodInfo: {
             food_name: log.FoodInfo.food_name,
             calories: unit_transform(log.FoodInfo.calories, log.amount),
@@ -133,7 +133,7 @@ const totalCalories_helper = async (user_id, date) => {
 
 const get_user_intakelogs = async (request, response) => {
     const user_id = request.user.user_id;
-    const now = new Date().toLocaleDateString();
+    const now = new Date().toISOString().split('T')[0];
     // const formattedDate = now.toISOString().split('T')[0];
     try {
         const reverse_formattedLogs = await formatedlog(user_id, now);
@@ -147,8 +147,8 @@ const get_user_intakelogs = async (request, response) => {
 
 const total_calories = async (request, response) => {
     const user_id = request.user.user_id;
-    const now = new Date().toLocaleDateString();
-    // const formattedDate = now.toISOString().split('T')[0];
+    const now = new Date().toISOString().split('T')[0];
+   
     try {
         const total_calories = await totalCalories_helper(user_id, now);
         return total_calories
@@ -160,7 +160,7 @@ const total_calories = async (request, response) => {
 
 const post_user_intakelogs = async (request, response) => {
     const user_id = request.user.user_id;
-    const date = new Date();
+    const date = new Date.toISOString().split('T')[0]();
     const { food_name, amount } = request.body;
     try {
         const food = await FoodInfo.findOne({ where: { food_name: food_name } });
