@@ -95,7 +95,7 @@ passport.use(
       clientID:
         process.env.clientID,
       clientSecret: process.env.clientSecret,
-      callbackURL: isProduction ? process.env.callbackURL :process.env.local_callbackURL
+      callbackURL: isProduction ? process.env.callbackURL : process.env.local_callbackURL
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

@@ -60,14 +60,14 @@
             margin: 20px auto;
         }
     </style>
-    <!-- 引入 Chart.js -->
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>User Records</h1>
 
-        <!-- 體重變化圖表 -->
+       
         <div class="chart-container">
             <canvas id="weightChart"></canvas>
         </div>
@@ -87,20 +87,20 @@
                 <p><strong>Tdee:</strong> {{this.tdee}}</p>
                 <p><strong>Date:</strong> {{this.date}}</p>
 
-                <!-- 添加刪除和修改按鈕 -->
+               
                 <div class="action-buttons">
                     <button class="edit-btn" data-info-id="{{this.info_id}}">Edit</button>
                     <button class="delete-btn" data-info-id="{{this.info_id}}">Delete</button>
                 </div>
 
-                <!-- 修改表單 -->
+                
                 <form class="edit-form" data-info-id="{{this.info_id}}">
                     <input type="text" name="height" placeholder="Enter new height" value="{{this.height}}">
                     <input type="text" name="weight" placeholder="Enter new weight" value="{{this.weight}}">
                     <input type="text" name="age" placeholder="Enter new age" value="{{this.age}}">
                     <input type="text" name="gender" placeholder="Enter new gender" value="{{this.gender}}">
                     <input type="number" name="exercise_per_week" placeholder="Enter new exercise per week" value="{{this.exercise_per_week}}">
-                    <!-- 可以根据需要添加更多字段 -->
+                    
                     <button type="submit">Update</button>
                 </form>
             </div>
@@ -112,7 +112,7 @@
     </div>
 
     <script>
-        // 刪除按鈕事件處理
+       
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', async function() {
                 const infoId = this.getAttribute('data-info-id');
@@ -121,7 +121,7 @@
                         method: 'DELETE',
                     });
                     if (response.ok) {
-                        location.reload(); // 刪除成功後重新加載頁面
+                        location.reload();
                     } else {
                         alert('Failed to delete the record');
                     }
@@ -132,7 +132,7 @@
             });
         });
 
-        // 顯示修改表單
+     
         document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const infoId = this.getAttribute('data-info-id');
@@ -141,7 +141,7 @@
             });
         });
 
-        // 處理修改表單提交
+      
         document.querySelectorAll('.edit-form').forEach(form => {
             form.addEventListener('submit', async function(event) {
                 event.preventDefault();
@@ -157,7 +157,7 @@
                         body: JSON.stringify(data),
                     });
                     if (response.ok) {
-                        location.reload(); // 更新成功後重新加載頁面
+                        location.reload(); 
                     } else {
                         alert('Failed to update the record');
                     }
@@ -168,7 +168,7 @@
             });
         });
 
-        // 準備圖表數據
+        
        const weightData = [
         {{#each userRecords}}
             {{this.weight}}{{#unless @last}},{{/unless}}
@@ -181,7 +181,6 @@
         {{/each}}
          ];
 
-    // 使用 Chart.js 繪製體重變化圖表
     const ctx = document.getElementById('weightChart').getContext('2d');
     const weightChart = new Chart(ctx, {
         type: 'line',

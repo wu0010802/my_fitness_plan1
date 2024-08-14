@@ -106,17 +106,17 @@ const formatedlog = async (user_id, date) => {
 const sum_nutrition = (intakelogs) => {
     const sum_logs = {
         total_calories: intakelogs.reduce((total, log) => {
-            return total + Number(log.FoodInfo.calories);
-        }, 0),
+            return (total + Number(log.FoodInfo.calories));
+        }, 0).toFixed(2),
         total_protein: intakelogs.reduce((total, log) => {
             return total + Number(log.FoodInfo.protein);
-        }, 0),
+        }, 0).toFixed(2),
         total_fat: intakelogs.reduce((total, log) => {
             return total + Number(log.FoodInfo.fat);
-        }, 0),
+        }, 0).toFixed(2),
         total_carbohydrate: intakelogs.reduce((total, log) => {
             return total + Number(log.FoodInfo.carbohydrate);
-        }, 0)
+        }, 0).toFixed(2)
     }
     return sum_logs
 }
@@ -139,6 +139,7 @@ const get_user_intakelogs = async (request, response) => {
     try {
         const reverse_formattedLogs = await formatedlog(user_id, formattedDate);
         const sum_log = sum_nutrition(reverse_formattedLogs);
+     
         response.render('intakelogs', { logs: reverse_formattedLogs, sum_log: sum_log });
     } catch (error) {
         console.error('Error fetching intake logs:', error);

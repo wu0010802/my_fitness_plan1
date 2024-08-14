@@ -80,7 +80,7 @@
 
 <body>
 
-    <!-- 總結顯示區域 -->
+    
     <div class="summary">
         <h2>SUMMARY</h2>
         <strong>Calories:</strong> {{sum_log.total_calories}} kcal<br>
@@ -100,13 +100,13 @@
             <strong>Fat:</strong> {{this.FoodInfo.fat}} g<br>
             <strong>Carbohydrate:</strong> {{this.FoodInfo.carbohydrate}} g<br>
 
-            <!-- 添加刪除和修改按鈕，並傳遞 log_id -->
+           
             <div class="action-buttons">
                 <button class="edit-btn" data-log-id="{{this.log_id}}">Edit</button>
                 <button class="delete-btn" data-log-id="{{this.log_id}}">Delete</button>
             </div>
 
-            <!-- 修改表單 -->
+        
             <form class="edit-form" data-log-id="{{this.log_id}}">
                 <input type="number" name="amount" placeholder="Enter new amount" value="{{this.amount}}">
                 <button type="submit">Update</button>
@@ -118,7 +118,7 @@
     <a href="/profile">Back to Profile</a>
 
     <script>
-        // 刪除按鈕事件處理
+       
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', async function() {
                 const logId = this.getAttribute('data-log-id');
@@ -127,7 +127,7 @@
                         method: 'DELETE',
                     });
                     if (response.ok) {
-                        location.reload(); // 刪除成功後重新加載頁面
+                        location.reload(); 
                     } else {
                         alert('Failed to delete the record');
                     }
@@ -138,7 +138,7 @@
             });
         });
 
-        // 顯示修改表單
+  
         document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const logId = this.getAttribute('data-log-id');
@@ -147,7 +147,7 @@
             });
         });
 
-        // 處理修改表單提交
+  
         document.querySelectorAll('.edit-form').forEach(form => {
             form.addEventListener('submit', async function(event) {
                 event.preventDefault();
@@ -162,7 +162,7 @@
                         body: JSON.stringify({ amount: amount }),
                     });
                     if (response.ok) {
-                        location.reload(); // 更新成功後重新加載頁面
+                        location.reload();
                     } else {
                         alert('Failed to update the record');
                     }

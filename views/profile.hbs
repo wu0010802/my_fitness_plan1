@@ -7,7 +7,7 @@
     <title>Profile</title>
     <link rel="stylesheet" href="/css/profile.css">
     <style>
-        /* 新增全局樣式 */
+      
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f0f2f5;
@@ -39,9 +39,9 @@
             display: block;
             visibility: visible;
             z-index: 1000;
-            /* 確保在前面顯示 */
+           
             position: relative;
-            /* 確保不會被其他元素覆蓋 */
+          
         }
 
 
@@ -162,7 +162,7 @@
         <p>Today intake Calories: {{ user.calories }} kcal</p>
         <p>Today Calories remaining: {{ user.Calories_remaining }} kcal</p>
 
-        <!-- Add Food Intake Form -->
+        
         <form id="foodForm" action="/user/intake" method="POST">
             <label for="food_name">Choose a food:</label>
             <input type="text" id="foodName" name="food_name" placeholder="Enter Food Name" required>
@@ -170,7 +170,7 @@
             <button type="button" id="addFoodBtn">Add Food Intake</button>
         </form>
 
-        <!-- Food Modal -->
+       
         <div id="foodModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -179,7 +179,7 @@
             </div>
         </div>
 
-        <!-- User Records -->
+        
         <h2>Check Today's Intake Logs</h2>
         <button type="button" id="logBtn">Get Intake Logs</button>
 
@@ -188,11 +188,11 @@
 
     
 
-        <!-- Post New User Record -->
+      
         <h2>Post New User Record</h2>
         <button type="button" id="postUserRecord">Post New User Record</button>
 
-        <!-- User Record Modal -->
+       
         <div id="userRecordModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
