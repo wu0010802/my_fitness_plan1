@@ -10,6 +10,7 @@ require('dotenv').config({ path: '.env.dev' });
 const UserInfo = require('../models/UserInfo')
 const UserRecord = require('../models/UserRecord')
 
+const isProduction = process.env.NODE_ENV === 'production';
 
 const { total_calories } = require('../controllers/intake')
 
@@ -94,7 +95,7 @@ passport.use(
       clientID:
         process.env.clientID,
       clientSecret: process.env.clientSecret,
-      callbackURL: process.env.callbackURL
+      callbackURL: isProduction ? process.env.callbackURL :process.env.local_callbackURL
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

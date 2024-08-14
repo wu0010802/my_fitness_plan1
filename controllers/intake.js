@@ -47,8 +47,6 @@ const IntakeLogs = sequelize.define('IntakeLogs', {
     timestamps: false
 });
 
-
-
 UserInfo.belongsToMany(FoodInfo, { through: IntakeLogs, foreignKey: 'user_id' });
 FoodInfo.belongsToMany(UserInfo, { through: IntakeLogs, foreignKey: 'food_id' });
 IntakeLogs.belongsTo(UserInfo, { foreignKey: 'user_id' });
