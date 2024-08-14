@@ -2,47 +2,25 @@ const { request, response } = require('express');
 
 const UserInfo = require('../models/UserInfo');
 const FoodInfo = require('../models/FoodInfo');
-const IntakeLogs = require('../models/intakelogs')
+const IntakeLogs = require('../models/intakelogs');
+const { Query } = require('pg');
+const QueryFrequency = require('../models/QueryFrequency');
 
 
 const now = new Date()
 const formattedDate = now.toISOString().split('T')[0];
 
 
-// const IntakeLogs = sequelize.define('IntakeLogs', {
-//     log_id: {
-//         type: DataTypes.INTEGER,
-//         autoIncrement: true,
-//         primaryKey: true
-//     },
-//     user_id: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false,
-//         references: {
-//             model: UserInfo,
-//             key: 'user_id'
-//         }
-//     },
-//     food_id: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false,
-//         references: {
-//             model: FoodInfo,
-//             key: 'food_id'
-//         }
-//     },
-//     amount: {
-//         type: DataTypes.DOUBLE,
-//         allowNull: false
-//     },
-//     date: {
-//         type: DataTypes.DATEONLY,
-//         allowNull: false
-//     }
-// }, {
-//     tableName: 'intakelogs',
-//     timestamps: false
-// });
+
+FoodInfo.hasOne(QueryFrequency, {
+    foreignKey: 'food_id',
+    onDelete: 'CASCADE',
+});
+
+QueryFrequency.belongsTo(FoodInfo, {
+    foreignKey: 'food_id',
+});
+
 
 UserInfo.belongsToMany(FoodInfo, { through: IntakeLogs, foreignKey: 'user_id' });
 FoodInfo.belongsToMany(UserInfo, { through: IntakeLogs, foreignKey: 'food_id' });
@@ -132,11 +110,11 @@ const totalCalories_helper = async (user_id, date) => {
 
 const get_user_intakelogs = async (request, response) => {
     const user_id = request.user.user_id;
-    
+
     try {
         const reverse_formattedLogs = await formatedlog(user_id, formattedDate);
         const sum_log = sum_nutrition(reverse_formattedLogs);
-     
+
         response.render('intakelogs', { logs: reverse_formattedLogs, sum_log: sum_log });
     } catch (error) {
         console.error('Error fetching intake logs:', error);
@@ -146,8 +124,8 @@ const get_user_intakelogs = async (request, response) => {
 
 const total_calories = async (request, response) => {
     const user_id = request.user.user_id;
-    
-   
+
+
     try {
         const total_calories = await totalCalories_helper(user_id, formattedDate);
         return total_calories
@@ -159,7 +137,6 @@ const total_calories = async (request, response) => {
 
 const post_user_intakelogs = async (request, response) => {
     const user_id = request.user.user_id;
-    
     const { food_name, amount } = request.body;
     try {
         const food = await FoodInfo.findOne({ where: { food_name: food_name } });
@@ -174,6 +151,13 @@ const post_user_intakelogs = async (request, response) => {
             amount: amount,
             food_id: food.food_id
         });
+        const queryFrequency = await QueryFrequency.findByPk(food.food_id);
+        if (queryFrequency) {
+            await queryFrequency.increment('query_frequency');
+        } else {
+            await QueryFrequency.create({ food_id: food.food_id, query_frequency: 1 });
+        }
+
 
         response.redirect('/profile');
     } catch (error) {

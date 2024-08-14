@@ -1,5 +1,16 @@
 const { request, response } = require('express');
 const FoodInfo = require('../models/FoodInfo');
+const QueryFrequency = require('../models/QueryFrequency');
+
+
+FoodInfo.hasOne(QueryFrequency, {
+    foreignKey: 'food_id',
+    onDelete: 'CASCADE',
+});
+
+QueryFrequency.belongsTo(FoodInfo, {
+    foreignKey: 'food_id',
+});
 
 require('dotenv').config({ path: '.env.dev' });
 const app_id = process.env.api_id;
@@ -8,7 +19,6 @@ const app_key = process.env.api_key;
 const unit_transform = (nutrition, amount) => {
     return (nutrition * amount / 100).toFixed(2);
 }
-
 
 async function getFoodInfo_api(food) {
     try {
@@ -42,16 +52,16 @@ const get_post_food_info = async (request, response) => {
 
 
             const created_food = await FoodInfo.create({ food_name: food_name, calories: calories, protein: protein, carbohydrate: carbohydrate, fat: fat });
-            
+
 
             attributesToTransform.forEach(attribute => {
-                created_food[attribute] = unit_transform(created_food[attribute],amount);
+                created_food[attribute] = unit_transform(created_food[attribute], amount);
             });
 
             response.status(200).json(created_food);
         } else {
             attributesToTransform.forEach(attribute => {
-                food_db[attribute] = unit_transform(food_db[attribute],amount);
+                food_db[attribute] = unit_transform(food_db[attribute], amount);
             });
             response.status(200).json(food_db);
         }
@@ -61,8 +71,38 @@ const get_post_food_info = async (request, response) => {
     }
 };
 
+
+
+
+const get_most_frequent_query_food = async (request, response) => {
+    try {
+        const top_query_foods = await QueryFrequency.findAll({
+            order: [
+                ['query_frequency', 'DESC'],
+
+            ],
+            limit: 5,
+            include: {
+                model: FoodInfo
+            }
+        })
+        const formated_top_query_food = top_query_foods.map(food => ({
+            food_name: food.FoodInfo.food_name,
+            calories: food.FoodInfo.calories,
+            protein: food.FoodInfo.protein,
+            fat: food.FoodInfo.fat,
+            carbohydrate: food.FoodInfo.carbohydrate
+        }))
+        response.json(formated_top_query_food)
+    } catch (error) {
+        console.error('fail to get food frequency:', error)
+        response.status(500).json({ error: 'fail to get food frequency' });
+    }
+}
+
 module.exports = {
-    get_post_food_info
+    get_post_food_info,
+    get_most_frequent_query_food
 };
 
 

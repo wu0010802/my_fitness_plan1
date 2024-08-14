@@ -1,5 +1,5 @@
 ### API EndPoint
-* 測試：https://my-fitness-plan-en9m.onrender.com/login
+* render部署：https://my-fitness-plan-en9m.onrender.com/login
 
 
 ### project setup

@@ -5,7 +5,7 @@ const sequelize = require('./database/sequelize')
 const cors = require('cors');
 const port = process.env.PORT || 3000
 const path = require('path');
-// const helmet = require('helmet');
+
 const passport = require("passport");
 const session = require("express-session");
 const store = new session.MemoryStore();
@@ -13,7 +13,7 @@ const store = new session.MemoryStore();
 const exphbs = require('express-handlebars');
 
 
-// app.use(helmet());
+
 
 app.use(
   session({
