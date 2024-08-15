@@ -160,9 +160,9 @@
 
         <form id="foodForm" action="/user/intake" method="POST">
             <label for="food_name">Choose a food:</label>
-            <div style="display: flex; align-items: center;">
+            <div style="display: flex; align-items: center; width: 100%; justify-content: space-around">
                 <input type="text" id="foodName" name="food_name" placeholder="Enter Food Name" required>
-                <button type="button" id="showTopFoodsBtn" style="margin-left: 8px;">Top Foods</button>
+                <button type="button" style="margin: 0" id="showTopFoodsBtn">Top Foods</button>
             </div>
             <input type="number" id="amount" name="amount" min="0" placeholder="Enter Amount (grams)" required>
             <button type="button" id="addFoodBtn">Add Food Intake</button>
