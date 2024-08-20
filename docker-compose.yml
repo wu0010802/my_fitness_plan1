@@ -1,0 +1,22 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: yilunwu
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: fitness
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yilunwu -d fitness"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
