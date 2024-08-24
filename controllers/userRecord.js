@@ -131,7 +131,7 @@ async function createUser(request) {
   }
 }
 
-
+// helper for post before/after login user record
 const post_user_record = async (request, response) => {
   try {
     const record = await createUser(request)
@@ -213,6 +213,8 @@ const delete_user_record = async (request, response) => {
   }
 };
 
+
+
 const post_user_record_after_login =  async (request, response) => {
   try {
     const record = await post_user_record(request);
@@ -222,8 +224,6 @@ const post_user_record_after_login =  async (request, response) => {
     response.status(500).json({ message: 'An error occurred while processing your request' });
   }
 }
-
-
 
 
 

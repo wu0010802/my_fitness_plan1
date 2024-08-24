@@ -5,7 +5,9 @@ const { ensureAuthenticated } = require('./userAuthorize');
 
 router.get('/user/records', ensureAuthenticated, UserController.get_user_records);
 
+
 router.put('/user/records/:info_id', ensureAuthenticated, UserController.update_user_record);
+
 
 router.delete('/user/records/:info_id', ensureAuthenticated, UserController.delete_user_record);
 
