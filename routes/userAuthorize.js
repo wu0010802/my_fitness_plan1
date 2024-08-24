@@ -8,7 +8,7 @@ require('dotenv').config({ path: '.env.dev' });
 
 router.post('/register', userAuthorizeController.regiser);
 
-
+const isProduction = process.env.NODE_ENV === 'production';
 
 //  本地認證登入
 router.post("/login",
@@ -31,7 +31,9 @@ router.get('/profile', userAuthorizeController.render_profile);
 
 
 router.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login", {
+    url:  isProduction ? process.env.renderGoogleURL:process.env.LOCAL_GOOGLE_LOGIN_URL
+  });
 });
 
 router.get('/register', (req, res) => {

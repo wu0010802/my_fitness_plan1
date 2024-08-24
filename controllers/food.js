@@ -20,6 +20,8 @@ const unit_transform = (nutrition, amount) => {
     return (nutrition * amount / 100).toFixed(2);
 }
 
+
+// 從第三方api得到食物的資料
 async function getFoodInfo_api(food) {
     try {
         const response = await fetch(
@@ -32,6 +34,8 @@ async function getFoodInfo_api(food) {
     }
 }
 
+
+// 獲得食物的資訊
 const get_post_food_info = async (request, response) => {
 
     const food_name = request.query.food;
