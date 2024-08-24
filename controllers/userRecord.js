@@ -213,8 +213,35 @@ const delete_user_record = async (request, response) => {
   }
 };
 
+const post_user_record_after_login =  async (request, response) => {
+  try {
+    const record = await post_user_record(request);
+    response.status(201).json(record);
+  } catch (error) {
+    console.error('Error during post_user_record execution:', error);
+    response.status(500).json({ message: 'An error occurred while processing your request' });
+  }
+}
 
 
+
+
+
+const post_user_record_before_login = async (request, response) => {
+  try {
+    const record = await post_user_record(request);
+
+
+    if (!response.headersSent) {
+      res.redirect('/profile');
+    }
+  } catch (error) {
+    console.error('Error during post_user_record execution:', error);
+    if (!response.headersSent) {
+      response.status(500).json({ message: 'An error occurred while processing your request' });
+    }
+  }
+}
 
 
 
@@ -223,7 +250,9 @@ module.exports = {
   post_user_record,
   update_user_record,
   delete_user_record,
-  createUser
+  createUser,
+  post_user_record_before_login,
+  post_user_record_after_login
 }
 
 

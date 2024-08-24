@@ -10,8 +10,6 @@ const QueryFrequency = require('../models/QueryFrequency');
 const now = new Date()
 const formattedDate = now.toISOString().split('T')[0];
 
-
-
 FoodInfo.hasOne(QueryFrequency, {
     foreignKey: 'food_id',
     onDelete: 'CASCADE',
