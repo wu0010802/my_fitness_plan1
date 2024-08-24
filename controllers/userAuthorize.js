@@ -29,8 +29,8 @@ const passwordHash = async (password, saltRounds = 10) => {
     }
     return null;
 };
-
-const google_callback =  async (req, res, next) => {
+// google成功登入後導向至render_profile或addRecord畫面
+const redirect_profile_or_addRecord =  async (req, res, next) => {
     try {
       const user_record = await UserRecord.findAll({ where: { user_id: req.user.user_id } });
 
@@ -52,7 +52,7 @@ const google_callback =  async (req, res, next) => {
   }
 
 
-
+// 渲染主頁面
 const render_profile = async (req, res) => {
     if (req.isAuthenticated()) {
       try {
@@ -96,8 +96,8 @@ const render_profile = async (req, res) => {
   }
 
 
-
-const regiser = async (req, res) => {
+// 本地註冊
+const local_regiser = async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
   
   
@@ -214,7 +214,7 @@ passport.deserializeUser(async (user_id, done) => {
 
 
 module.exports = {
-    regiser,
+  local_regiser,
     render_profile,
-    google_callback
+    redirect_profile_or_addRecord
 }

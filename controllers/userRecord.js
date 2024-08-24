@@ -71,8 +71,6 @@ const formatuser = (user_records) => {
     return record_obj
   })
 
-
-
 }
 
 

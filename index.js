@@ -1,3 +1,4 @@
+// 依賴模組
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -5,16 +6,12 @@ const sequelize = require('./database/sequelize')
 const cors = require('cors');
 const port = process.env.PORT || 3000
 const path = require('path');
-
 const passport = require("passport");
 const session = require("express-session");
 const store = new session.MemoryStore();
-
 const exphbs = require('express-handlebars');
 
 
-
-const b = 1
 app.use(
   session({
     secret: "fitness",
@@ -27,8 +24,6 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-
 
 app.use(cors());
 app.use(bodyParser.json());

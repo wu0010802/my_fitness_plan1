@@ -28,7 +28,7 @@ IntakeLogs.belongsTo(FoodInfo, { foreignKey: 'food_id' });
 const unit_transform = (nutrition, amount) => {
     return (nutrition * amount / 100).toFixed(2);
 }
-
+// 根據user_id以現在時間取得攝取資料
 const intakelogs_helper = async (user_id, date) => {
     try {
         const intakeLogs = await IntakeLogs.findAll({
