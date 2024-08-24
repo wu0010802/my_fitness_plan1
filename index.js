@@ -14,7 +14,7 @@ const exphbs = require('express-handlebars');
 
 
 
-
+const b = 1
 app.use(
   session({
     secret: "fitness",
