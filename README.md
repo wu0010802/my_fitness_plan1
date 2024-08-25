@@ -1,6 +1,6 @@
 # 專案名稱 My Fitness Plan
 
-### 這是一款幫助減肥的人所設計出的熱量控制APP。用戶可以通過電子郵件和密碼登入，或是使用 Google 帳戶進行快速登入。它根據用戶的基本資訊計算出所應攝取的熱量，並且透過第三方api的串連自動記錄這些食物的營養素成分來更新當日剩餘的卡路里攝取量。用戶也可以查看當日的飲食攝取日誌，並根據實際攝取情況進行調整。
+這是一款幫助減肥的人所設計出的熱量控制APP。用戶可以通過電子郵件和密碼登入，或是使用 Google 帳戶進行快速登入。它根據用戶的基本資訊計算出所應攝取的熱量，並且透過第三方api的串連自動記錄這些食物的營養素成分來更新當日剩餘的卡路里攝取量。用戶也可以查看當日的飲食攝取日誌，並根據實際攝取情況進行調整。
 
 ### 技術棧
 
@@ -21,7 +21,7 @@
 * nodemon
 
 ### 專案結構
-
+```bash
 MY_FITNESS_PLAN/
 ├── controllers/             # 控制器目錄，處理業務邏輯
 │   ├── food.js              # 食物相關控制器
@@ -52,7 +52,7 @@ MY_FITNESS_PLAN/
 ├── index.js                 # 應用程式入口文件
 └── package.json             # 專案元數據及相依套件管理
 └── README.md                # 專案說明文件
-
+```
 
 
 ### .env.example
@@ -78,7 +78,7 @@ local_callbackURL=http://localhost:3000/auth/google/callback
 LOCAL_GOOGLE_LOGIN_URL=http://localhost:3000/auth/google
 ```
 ### 安裝步驟
-克隆專案到本地
+clone專案到本地
 
 ```bash
 git clone https://github.com/wu0010802/my_fitness_plan.git
