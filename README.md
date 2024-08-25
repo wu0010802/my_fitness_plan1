@@ -1,4 +1,4 @@
-# 專案名稱 My Fitness Plan
+# My Fitness Plan
 
 這是一款幫助減肥的人所設計出的熱量控制APP。用戶可以通過電子郵件和密碼登入，或是使用 Google 帳戶進行快速登入。它根據用戶的基本資訊計算出所應攝取的熱量，並且透過第三方api的串連自動記錄這些食物的營養素成分來更新當日剩餘的卡路里攝取量。用戶也可以查看當日的飲食攝取日誌，並根據實際攝取情況進行調整。
 
@@ -78,7 +78,8 @@ local_callbackURL=http://localhost:3000/auth/google/callback
 LOCAL_GOOGLE_LOGIN_URL=http://localhost:3000/auth/google
 ```
 ### 安裝步驟
-clone專案到本地
+
+1.clone專案到本地
 
 ```bash
 git clone https://github.com/wu0010802/my_fitness_plan.git
@@ -100,10 +101,29 @@ npm run dev
 ```
 
 
+### 使用 Docker Compose 啟動專案
+
+1.clone專案
+
+```bash
+git clone https://github.com/wu0010802/my_fitness_plan.git
+cd my_fitness_plan
+```
+
+2.設置環境變數
+
+```bash
+cp .env.example .env
+```
+
+3.啟用docker compose
+
+```bash
+docker-compose up -d
+```
+
 ### API EndPoint
 * render部署：https://my-fitness-plan-en9m.onrender.com/login
 
 
-
-└── README.md
 
