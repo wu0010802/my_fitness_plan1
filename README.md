@@ -23,35 +23,35 @@
 ### 專案結構
 ```bash
 MY_FITNESS_PLAN/
-├── controllers/             # 控制器目錄，處理業務邏輯
-│   ├── food.js              # 食物相關控制器
-│   ├── intake.js            # 攝取記錄相關控制器
-│   ├── userAuthorize.js     # 使用者授權控制器
-│   └── userRecord.js        # 使用者資料控制器
-├── database/                # 資料庫相關文件
-│   └── sequelize.js         # Sequelize ORM 配置
-├── models/                  # 資料庫模型目錄
-├── node_modules/            # Node.js 相依套件
-├── public/                  # 公共資源目錄（靜態文件）
-├── routes/                  # 路由定義目錄
-│   ├── foodRoutes.js        # 食物相關路由
-│   ├── intakeRoutes.js      # 攝取記錄相關路由
-│   ├── userAuthorize.js     # 使用者授權路由
-│   └── userRoutes.js        # 使用者資料相關路由
-├── views/                   # 視圖模板目錄 (Handlebars)
-│   ├── addRecord.hbs        # 添加記錄頁面模板
-│   ├── intakelogs.hbs       # 攝取記錄頁面模板
-│   ├── login.hbs            # 登入頁面模板
-│   ├── profile.hbs          # 個人資料頁面模板
-│   ├── register.hbs         # 註冊頁面模板
-│   └── userRecords.hbs      # 使用者資料頁面模板
-├── .env.dev                 # 開發環境變數配置
-├── .gitignore               # Git 忽略文件
-├── docker-compose.yml       # Docker Compose 配置文件
-├── Dockerfile               # Docker 映像文件配置
-├── index.js                 # 應用程式入口文件
-└── package.json             # 專案元數據及相依套件管理
-└── README.md                # 專案說明文件
+├── controllers/             
+│   ├── food.js              
+│   ├── intake.js            
+│   ├── userAuthorize.js     
+│   └── userRecord.js     
+├── database/                
+│   └── sequelize.js         
+├── models/                
+├── node_modules/           
+├── public/                  
+├── routes/                  
+│   ├── foodRoutes.js        
+│   ├── intakeRoutes.js     
+│   ├── userAuthorize.js    
+│   └── userRoutes.js       
+├── views/                  
+│   ├── addRecord.hbs      
+│   ├── intakelogs.hbs       
+│   ├── login.hbs            
+│   ├── profile.hbs          
+│   ├── register.hbs         
+│   └── userRecords.hbs      
+├── .env.dev                 
+├── .gitignore               
+├── docker-compose.yml      
+├── Dockerfile             
+├── index.js               
+└── package.json         
+└── README.md             
 ```
 
 
@@ -89,6 +89,11 @@ git clone https://github.com/wu0010802/my_fitness_plan.git
 npm install
 ```
 
+### 環境變數示範
+```bash
+cp .env.example .env
+```
+
 ### Compiles and hot-reloads for development
 ```bash
 npm run dev
@@ -100,6 +105,5 @@ npm run dev
 
 
 
-
-
+└── README.md
 
