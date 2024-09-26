@@ -19,6 +19,10 @@ const UserInfo = sequelize.define('UserInfo', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  isEmailVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false, 
+  },
 }, {
   timestamps: false,
   tableName: 'user_info'

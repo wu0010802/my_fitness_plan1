@@ -18,4 +18,4 @@ router.post('/user/records', ensureAuthenticated,UserController.post_user_record
 // 登入前用戶註冊使用者資訊 根據根據body(height, weight, age, gender, exercise_per_week)
 router.post('/register/records/:user_id', UserController.post_user_record_before_login);
 
-module.exports = router; 
+module.exports = router;

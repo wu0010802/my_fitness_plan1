@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const passport = require("passport");
 
+
 const userAuthorizeController = require('../controllers/userAuthorize')
 
 require('dotenv').config({ path: '.env.dev' });
@@ -56,6 +57,10 @@ const ensureAuthenticated = (req, res, next) => {
   }
   res.redirect('/login');
 };
+
+
+router.get('/verify-email', userAuthorizeController.email_verified);
+
 
 module.exports = {
   router,
